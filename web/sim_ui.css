@@ -1,0 +1,84 @@
+/* ===================== JORDAN SIM · premium UI layer (loaded last) =====================
+   The frame is always the dark JORDAN look (black glass cards, orange accent); the chart inside can be LIGHT (TradingView), JORDAN or DARK. */
+#view-sim, #view-sim.sm-light {
+  --sm-bg: #070708; --sm-panel: #0e0e11; --sm-line: #222229; --sm-text: #e6e6ec; --sm-dim: #7e7e8a; --sm-acc: #ffa028; --sm-chip: #15151a;
+  --ui-card: linear-gradient(180deg, #121216, #0d0d10); --ui-glow: rgba(255,160,40,.32); --ui-up: #22c08f; --ui-dn: #ff4d5e;
+  background: radial-gradient(1200px 500px at 15% -10%, rgba(255,160,40,.06), transparent 60%), #070708 !important; color: var(--sm-text) !important;
+  font-family: "JetBrains Mono", Consolas, monospace;
+}
+#view-sim .up { color: var(--ui-up) !important; } #view-sim .dn { color: var(--ui-dn) !important; }
+/* ---- top bar */
+#view-sim .sm-top { background: linear-gradient(180deg, #111115, #0b0b0e) !important; border-bottom: 1px solid var(--sm-line) !important; padding: 8px 12px !important; gap: 8px !important; box-shadow: 0 8px 24px rgba(0,0,0,.35); position: relative; z-index: 3; }
+#view-sim .sm-brand { display: flex; align-items: center; gap: 8px; margin-right: 10px; }
+#view-sim .sm-logo { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 8px; background: linear-gradient(135deg, #ffb24d, #ff7a00); color: #120a00; font-size: 13px; box-shadow: 0 4px 14px var(--ui-glow); }
+#view-sim .sm-bt { font: 800 15px Inter, Segoe UI, Arial, sans-serif; letter-spacing: 1.5px; color: #fff; }
+#view-sim .sm-bt em { font-style: normal; color: var(--sm-acc); margin-left: 4px; }
+#view-sim .sm-top select, #view-sim .sm-top input { background: #17171c !important; border: 1px solid var(--sm-line) !important; color: #e8e8ee !important; border-radius: 9px !important; padding: 6px 10px !important; font: 12px Inter, Segoe UI, Arial, sans-serif !important; outline: 0; transition: border-color .15s, box-shadow .15s; }
+#view-sim .sm-top select:focus, #view-sim .sm-top input:focus { border-color: var(--sm-acc) !important; box-shadow: 0 0 0 3px rgba(255,160,40,.15); }
+#view-sim .sm-top label.dim { font: 600 10px JetBrains Mono, monospace; letter-spacing: .8px; color: var(--sm-dim); display: inline-flex; align-items: center; gap: 6px; }
+#view-sim .sm-sep { background: var(--sm-line) !important; height: 24px !important; }
+#view-sim .sm-b { background: #17171c !important; color: #dcdce4 !important; border: 1px solid var(--sm-line) !important; border-radius: 9px !important; padding: 7px 12px !important; font: 700 11px Inter, Segoe UI, Arial, sans-serif !important; letter-spacing: .6px; transition: border-color .15s, background .15s, transform .08s, color .15s; }
+#view-sim .sm-b:hover { border-color: #4a4a55 !important; background: #1d1d23 !important; color: #fff !important; }
+#view-sim .sm-b:active { transform: translateY(1px); }
+#view-sim .sm-rep { background: linear-gradient(180deg, #ff5a4f, #d6372e) !important; border-color: transparent !important; color: #fff !important; box-shadow: 0 4px 16px rgba(214,55,46,.35); }
+#view-sim .sm-play { display: inline-flex; align-items: center; gap: 8px; border: 0; border-radius: 999px; padding: 6px 16px 6px 6px; background: linear-gradient(180deg, #ffb24d, #ff7a00); color: #120a00; font: 800 12px Inter, Segoe UI, Arial, sans-serif; letter-spacing: 1px; cursor: pointer; box-shadow: 0 6px 20px var(--ui-glow); transition: transform .1s, box-shadow .2s; min-width: 0 !important; }
+#view-sim .sm-play i { display: grid; place-items: center; width: 26px; height: 26px; border-radius: 50%; background: #120a00; color: var(--sm-acc); font-style: normal; font-size: 11px; }
+#view-sim .sm-play:hover { transform: translateY(-1px); box-shadow: 0 8px 26px rgba(255,160,40,.45); }
+#view-sim .sm-play.on { animation: smPulse 1.6s ease-in-out infinite; }
+@keyframes smPulse { 0%, 100% { box-shadow: 0 6px 20px var(--ui-glow); } 50% { box-shadow: 0 6px 30px rgba(255,160,40,.6), 0 0 0 4px rgba(255,160,40,.12); } }
+#view-sim .sm-clock { font: 800 18px JetBrains Mono, monospace !important; color: #fff !important; letter-spacing: 1px; padding: 0 10px !important; text-shadow: 0 0 18px rgba(255,160,40,.25); }
+/* segmented controls: speeds, timeframes, themes */
+#view-sim #sm-speeds, #view-sim #sm-tfs, #view-sim .sm-seg3 { display: inline-flex; background: #141418; border: 1px solid var(--sm-line); border-radius: 10px; padding: 3px; gap: 2px; }
+#view-sim #sm-speeds .sm-chip, #view-sim #sm-tfs .sm-chip, #view-sim .sm-seg3 button { background: transparent !important; border: 0 !important; color: #9a9aa6 !important; border-radius: 7px !important; padding: 5px 9px !important; font: 700 11px JetBrains Mono, monospace !important; cursor: pointer; transition: color .15s, background .15s; }
+#view-sim #sm-speeds .sm-chip:hover, #view-sim #sm-tfs .sm-chip:hover, #view-sim .sm-seg3 button:hover { color: #fff !important; background: #1e1e24 !important; }
+#view-sim #sm-speeds .sm-chip.on, #view-sim #sm-tfs .sm-chip.on, #view-sim .sm-seg3 button.on { background: linear-gradient(180deg, #ffb24d, #ff7a00) !important; color: #120a00 !important; box-shadow: 0 3px 12px var(--ui-glow); }
+/* layer toggles: quiet pills, lit when on */
+#view-sim .sm-chip.sm-tg { background: transparent !important; border: 1px solid var(--sm-line) !important; color: #7f7f8b !important; border-radius: 999px !important; padding: 4px 11px !important; font: 700 10.5px JetBrains Mono, monospace !important; letter-spacing: .5px; transition: color .15s, border-color .15s, background .15s; }
+#view-sim .sm-chip.sm-tg:hover { color: #fff !important; border-color: #4a4a55 !important; }
+#view-sim .sm-chip.sm-tg.on { color: var(--sm-acc) !important; border-color: rgba(255,160,40,.55) !important; background: rgba(255,160,40,.08) !important; box-shadow: inset 0 0 12px rgba(255,160,40,.06); }
+/* ---- layout as cards */
+#view-sim .sm-main { gap: 8px; padding: 8px 8px 0; }
+#view-sim .sm-left { border: 1px solid var(--sm-line) !important; border-radius: 14px; overflow: hidden; background: #0a0a0c; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+#view-sim .sm-sub { border-top: 1px solid var(--sm-line) !important; }
+#view-sim .sm-right { width: 372px !important; background: transparent !important; gap: 8px; }
+#view-sim .sm-dom { border: 1px solid var(--sm-line); border-radius: 14px; overflow: hidden; background: #0d0d10; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+#view-sim .sm-ord { background: var(--ui-card) !important; border: 1px solid var(--sm-line) !important; border-radius: 14px; padding: 12px !important; gap: 9px !important; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+#view-sim .sm-ord .sm-row > .dim { font: 600 10px JetBrains Mono, monospace; letter-spacing: .8px; color: var(--sm-dim); }
+#view-sim .sm-ord .sm-chip { background: #17171c !important; border: 1px solid var(--sm-line) !important; color: #cfcfd8 !important; border-radius: 8px !important; min-width: 34px; padding: 5px 8px !important; font: 700 11.5px JetBrains Mono, monospace !important; }
+#view-sim .sm-ord .sm-chip.on { background: linear-gradient(180deg, #ffb24d, #ff7a00) !important; color: #120a00 !important; border-color: transparent !important; box-shadow: 0 3px 12px var(--ui-glow); }
+#view-sim .sm-buy, #view-sim .sm-sell { border-radius: 12px !important; padding: 13px 10px !important; font: 800 14px Inter, Segoe UI, Arial, sans-serif !important; letter-spacing: 1px; position: relative; overflow: hidden; transition: transform .08s, box-shadow .2s, filter .15s; }
+#view-sim .sm-buy { background: linear-gradient(180deg, #4f8dff, #2a5fd6) !important; box-shadow: 0 8px 22px rgba(47,111,224,.38), inset 0 1px 0 rgba(255,255,255,.18) !important; }
+#view-sim .sm-sell { background: linear-gradient(180deg, #ff5a68, #d6303f) !important; box-shadow: 0 8px 22px rgba(214,55,46,.38), inset 0 1px 0 rgba(255,255,255,.18) !important; }
+#view-sim .sm-buy:hover, #view-sim .sm-sell:hover { filter: brightness(1.08); transform: translateY(-1px); }
+#view-sim .sm-buy small, #view-sim .sm-sell small { display: inline-block; margin-left: 6px; padding: 1px 6px; border-radius: 5px; background: rgba(0,0,0,.22); opacity: .9 !important; font: 700 10px JetBrains Mono, monospace !important; }
+#view-sim .sm-ord .sm-b { flex: 1; }
+#view-sim .sm-ord input[type=number] { background: #17171c !important; border: 1px solid var(--sm-line) !important; color: #fff !important; border-radius: 8px !important; padding: 5px 6px !important; font: 12px JetBrains Mono, monospace !important; }
+#view-sim .sm-ord label { display: inline-flex; align-items: center; gap: 6px; font: 700 10.5px JetBrains Mono, monospace; letter-spacing: .6px; }
+#view-sim .sm-ord input[type=checkbox] { accent-color: var(--sm-acc); width: 15px; height: 15px; }
+#view-sim .sm-acct { grid-template-columns: 1fr 1fr !important; gap: 8px !important; margin-top: 4px !important; }
+#view-sim .sm-kv { background: #131317; border: 1px solid var(--sm-line); border-radius: 10px; padding: 8px 10px; }
+#view-sim .sm-kv span { font: 600 9.5px JetBrains Mono, monospace !important; letter-spacing: .8px; color: var(--sm-dim) !important; }
+#view-sim .sm-kv b { font: 800 15px Inter, Segoe UI, Arial, sans-serif !important; margin-top: 3px; color: #fff; }
+#view-sim .sm-kv:first-child { grid-column: 1 / -1; background: linear-gradient(90deg, rgba(255,160,40,.10), #131317 60%); border-color: rgba(255,160,40,.25); }
+/* ---- bottom row */
+#view-sim .sm-bottom { gap: 8px; padding: 8px; border-top: 0 !important; height: 200px !important; }
+#view-sim .sm-box { background: var(--ui-card) !important; border: 1px solid var(--sm-line) !important; border-radius: 14px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,.35); }
+#view-sim .sm-h { color: #cfcfd8 !important; border-bottom: 1px solid var(--sm-line) !important; padding: 8px 12px !important; font: 700 10.5px JetBrains Mono, monospace !important; letter-spacing: 1px !important; }
+#view-sim .sm-h::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--sm-acc); box-shadow: 0 0 10px var(--ui-glow); flex: none; }
+#view-sim .sm-h input { background: #17171c !important; border: 1px solid var(--sm-line) !important; color: #fff !important; border-radius: 6px !important; }
+#view-sim .sm-tape { padding: 4px 10px !important; }
+#view-sim .sm-tape div { border-radius: 5px; padding: 0 4px; line-height: 18px !important; font: 11.5px JetBrains Mono, monospace !important; }
+#view-sim .sm-tape div:first-child { animation: smFlash .6s ease-out; }
+@keyframes smFlash { from { background: rgba(255,160,40,.18); } to { background: transparent; } }
+#view-sim .sm-tape .big { background: rgba(255,160,40,.12) !important; color: #fff !important; font-weight: 800 !important; }
+#view-sim .sm-feed div { border-bottom: 1px solid #1a1a20 !important; font: 12px Inter, Segoe UI, Arial, sans-serif !important; color: #d4d4dc; padding: 6px 2px !important; }
+#view-sim .sm-feed .dim { font: 10.5px JetBrains Mono, monospace; color: #6d6d78 !important; margin-right: 6px; }
+#view-sim .sm-feed .hint { color: #ffcf8a !important; }
+#view-sim .sm-live { background: rgba(10,10,12,.75) !important; border: 1px solid rgba(255,160,40,.45) !important; color: var(--sm-acc) !important; border-radius: 999px !important; padding: 4px 10px !important; backdrop-filter: blur(4px); }
+/* report + learn modal in the brand */
+#view-sim .sm-mbox { background: radial-gradient(100% 30% at 0% 0%, rgba(255,160,40,.06), transparent 60%), linear-gradient(180deg, #131317, #0c0c0f) !important; border: 1px solid var(--sm-line) !important; border-radius: 18px !important; }
+#view-sim .sm-mh b { color: #fff !important; font: 800 16px Inter, Segoe UI, Arial, sans-serif !important; letter-spacing: .5px; }
+#view-sim .sm-kpi, #view-sim .sm-rcol, #view-sim .sm-coach { background: #131317 !important; border-color: var(--sm-line) !important; border-radius: 12px !important; }
+#view-sim .sm-kpi b { font: 800 17px Inter, Segoe UI, Arial, sans-serif !important; }
+#view-sim .sm-rchart { border-radius: 14px !important; border-color: var(--sm-line) !important; }
+@media (max-width: 1100px) { #view-sim .sm-right { width: 290px !important; } }

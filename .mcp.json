@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "ntlab": {
+      "type": "stdio",
+      "command": "C:\\Users\\yarde\\Desktop\\Real algo trader - nostro\\.venv\\Scripts\\python.exe",
+      "args": ["C:\\Users\\yarde\\Desktop\\Real algo trader - nostro\\app\\ntlab\\mcp_server.py"],
+      "env": { "PYTHONIOENCODING": "utf-8" }
+    }
+  }
+}

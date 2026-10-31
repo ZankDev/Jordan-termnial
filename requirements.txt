@@ -1,0 +1,12 @@
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+pandas==2.2.3
+numpy==1.26.4
+requests==2.32.3
+pyarrow==18.1.0
+mplfinance==0.12.10b0
+matplotlib==3.11.2
+reportlab==5.0.1
+openpyxl>=3.1
+scipy>=1.17
+statsmodels>=0.15

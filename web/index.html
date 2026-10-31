@@ -1,0 +1,835 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <title>JORDAN Terminal</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2305070a'/%3E%3Cpath d='M8 22 L13 12 L18 19 L24 8' stroke='%23ff9d00' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=20260922a" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;700;800&display=swap" />
+  <link rel="stylesheet" href="bloomberg.css?v=20261030b" />
+  <link rel="stylesheet" href="journal.css?v=20261011b" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Merriweather:wght@400;700&family=Heebo:wght@400;600;800&family=Rubik:wght@400;700&family=Caveat:wght@500;700&family=Permanent+Marker&family=Patrick+Hand&family=Kalam:wght@400;700&family=Amatic+SC:wght@700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="responsive.css?v=20261006b" />
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.0/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+</head>
+<body>
+  <div id="boot" aria-hidden="true">
+    <canvas id="boot-cv"></canvas>
+    <div class="boot-vig"></div>
+    <div class="boot-center">
+      <div class="boot-top">◢ SECURE SESSION · ENCRYPTED ◣</div>
+      <h1 id="boot-title" class="boot-title"></h1>
+      <div class="boot-sub"><span>T</span><span>E</span><span>R</span><span>M</span><span>I</span><span>N</span><span>A</span><span>L</span></div>
+      <div class="boot-barwrap"><div class="boot-bar" id="boot-bar"></div></div>
+      <div class="boot-row"><span>MARKETS · ALGOS · WORLD</span><b id="boot-pct">000%</b></div>
+      <div class="boot-log" id="boot-log"></div>
+    </div>
+    <div class="boot-skip">CLICK OR PRESS ANY KEY TO SKIP</div>
+    <div class="boot-corner tl"></div><div class="boot-corner tr"></div><div class="boot-corner bl"></div><div class="boot-corner br"></div>
+  </div>
+  <script src="boot.js?v=5"></script>
+  <header class="topbar">
+    <div class="bb-row1">
+      <button class="nx-burger" id="nx-burger" aria-label="Menu" aria-expanded="false" aria-controls="tabs"><i></i><i></i><i></i></button>
+      <div class="bb-brand">JORDAN <small>TERMINAL</small></div>
+      <div class="bb-cmd">
+        <label for="bb-cmd">CMD</label>
+        <input id="bb-cmd" type="text" autocomplete="off" spellcheck="false" placeholder="FUNCTION or SECURITY  ·  CAP  MKT  STK  ·  SEC AAPL  ·  AI take me to stocks   |   ( press / )" />
+        <button class="bb-go" id="bb-go" title="Run function">GO</button>
+        <div class="bb-hints hidden" id="bb-cmd-hints"></div>
+      </div>
+      <div class="bb-status">
+        <div class="bb-chip-s keep"><span class="bb-led" id="bb-mkt-led"></span><b id="bb-mkt-txt">NYSE</b></div>
+        <div class="bb-chip-s"><span class="bb-led" id="bb-live-led"></span><b id="bb-live-txt">LIVE</b></div>
+        <div class="bb-chip-s"><span class="bb-led" id="bb-train-led"></span><b id="bb-train-txt">TRAIN</b></div>
+        <div class="bb-chip-s"><span class="bb-clk"><em>NY</em><span id="bb-clk-ny">--:--:--</span></span></div>
+        <div class="bb-chip-s"><span class="bb-clk"><em>LDN</em><span id="bb-clk-ldn">--:--:--</span></span></div>
+        <div class="bb-chip-s keep"><div class="clock" id="clock">--:--:--</div></div>
+      </div>
+    </div>
+    <nav class="tabs" id="tabs">
+      <button class="tab active" data-tab="capital"><i>1</i>HOME</button>
+      <div class="tab-menu" id="invest-menu">
+        <button class="tab-menu-btn" id="invest-btn" aria-haspopup="true" aria-expanded="false"><i>2</i>MARKETS<span class="crumb" id="invest-crumb"></span><span class="caret">&#9662;</span></button>
+        <div class="tab-menu-pop hidden" id="invest-pop" role="menu">
+          <div class="tm-head">OVERVIEW</div>
+          <button class="tab sub" data-tab="mkts" role="menuitem"><i>1</i><b>MARKETS</b><span>world indices, futures, rates, FX, sectors</span></button>
+          <button class="tab sub" data-tab="hot" role="menuitem"><i>2</i><b>HOT STOCKS</b><span>morning brief: 3 hot stocks, reasons, track record</span></button>
+          <button class="tab sub" data-tab="flow" role="menuitem"><i>3</i><b>MOST / DARK POOLS</b><span>most active · off-exchange prints · block-like trades</span></button>
+          <button class="tab sub" data-tab="wall" role="menuitem"><i>4</i><b>LIVE WALL</b><span>up to 50 live charts from your watchlist on one screen</span></button>
+          <div class="tm-head">ASSETS</div>
+          <button class="tab sub" data-tab="stocks" role="menuitem"><i>5</i><b>STOCKS</b><span>equity monitor, movers, sectors, watchlist</span></button>
+          <button class="tab sub" data-tab="crypto" role="menuitem"><i>6</i><b>CRYPTO</b><span>top 100 coins, dominance, movers</span></button>
+          <button class="tab sub" data-tab="funds" role="menuitem"><i>7</i><b>ETFs &amp; FUNDS</b><span>broad, sector, bond, commodity, thematic</span></button>
+          <button class="tab sub" data-tab="fxc" role="menuitem"><i>8</i><b>FX &amp; COMMODITIES</b><span>currencies, metals, energy, grains</span></button>
+          <button class="tab sub" data-tab="rwas" role="menuitem"><i>9</i><b>STABLECOINS (RWAS)</b><span>stablecoin supply, mints &amp; burns, by chain and peg</span></button>
+          <div class="tm-head">MACRO</div>
+          <button class="tab sub" data-tab="econ" role="menuitem"><i>10</i><b>ECONOMY</b><span>Fed, inflation, jobs, growth, yield curve</span></button>
+          <button class="tab sub" data-tab="cal" role="menuitem"><i>11</i><b>CALENDAR</b><span>economic releases · earnings</span></button>
+          <button class="tab sub" data-tab="rates" role="menuitem"><i>12</i><b>RATES</b><span>yield curve · Fed path</span></button>
+          <div class="tm-head">ANALYSE</div>
+          <button class="tab sub" data-tab="security" role="menuitem"><i>13</i><b>SECURITY</b><span>deep dive on any ticker: chart, fundamentals, news, filings</span></button>
+          <button class="tab sub" data-tab="eqs" role="menuitem"><i>14</i><b>SCREENER</b><span>filter builder, saved screens, CSV</span></button>
+          <button class="tab sub" data-tab="heat" role="menuitem"><i>15</i><b>HEATMAP</b><span>S&amp;P 500 / Nasdaq-100 by sector</span></button>
+          <button class="tab sub" data-tab="ana" role="menuitem"><i>16</i><b>ANALYTICS</b><span>compare · correlation · seasonality · COT</span></button>
+          <button class="tab sub" data-tab="opts" role="menuitem"><i>17</i><b>OPTIONS LAB</b><span>vol surface · pricer · unusual flow</span></button>
+          <button class="tab sub" data-tab="port" role="menuitem"><i>18</i><b>PORTFOLIO RISK</b><span>beta, VaR, Sharpe, drawdown, scenarios</span></button>
+          <button class="tab sub" data-tab="fund" role="menuitem"><i>19</i><b>FUND</b><span>portfolio, NAV, risk limits, WHY on every holding</span></button>
+          <div class="tm-head">TOOLS</div>
+          <button class="tab sub" data-tab="alrt" role="menuitem"><i>20</i><b>ALERTS</b><span>price, move, volume, news, releases → Telegram</span></button>
+          <button class="tab sub" data-tab="wksp" role="menuitem"><i>21</i><b>WORKSPACE</b><span>multi-panel layouts you can save</span></button>
+        </div>
+      </div>
+      <button class="tab" data-tab="news"><i>3</i>NEWS</button>
+      <div class="tab-menu" id="pm-menu">
+        <button class="tab-menu-btn" id="pm-btn" aria-haspopup="true" aria-expanded="false"><i>4</i>POLYMARKET<span class="crumb" id="pm-crumb"></span><span class="caret">&#9662;</span></button>
+        <div class="tab-menu-pop hidden" id="pm-pop" role="menu">
+          <div class="tm-head">PREDICTION MARKETS</div>
+          <button class="tab sub" data-tab="pmx" role="menuitem"><i>1</i><b>MARKETS</b><span>whole market: trending, odds moves, whales, news</span></button>
+          <div class="tm-head">YOUR BOTS</div>
+          <button class="tab sub" data-tab="polymarket" role="menuitem"><i>2</i><b>MOMO BOT</b><span>paper accounts, trainer, momo radar, session chart</span></button>
+          <button class="tab sub" data-tab="polymarket" data-scroll="pm-copybox" role="menuitem"><i>3</i><b>COPYTRADER</b><span>paper-shadow a tracked wallet's real trades</span></button>
+        </div>
+      </div>
+      <div class="tab-menu" id="nostro-menu">
+        <button class="tab-menu-btn" id="nostro-btn" aria-haspopup="true" aria-expanded="false"><i>5</i>NOSTRO<span class="crumb" id="nostro-crumb"></span><span class="caret">&#9662;</span></button>
+        <div class="tab-menu-pop hidden" id="nostro-pop" role="menu">
+          <div class="tm-head">TRADING</div>
+          <button class="tab sub" data-tab="acct" role="menuitem"><i>1</i><b>ACCOUNTS</b><span>every account · passed · today's P&amp;L · open trades</span></button>
+          <button class="tab sub" data-tab="live" role="menuitem"><i>2</i><b>LIVE TRADES</b><span>every trade the system takes, as it happens</span></button>
+          <button class="tab sub" data-tab="connect" role="menuitem"><i>3</i><b>REAL ACCOUNT</b><span>TradersPost + Telegram, signals sent, real balance</span></button>
+          <button class="tab sub" data-tab="journal" role="menuitem"><i>4</i><b>JOURNAL</b><span>notes, tags, screenshots, mistake analysis</span></button>
+          <div class="tm-head">STRATEGIES</div>
+          <button class="tab sub" data-tab="slab" role="menuitem"><i>5</i><b>STRATEGY LAB</b><span>every strategy · Apex pass odds · compare · recommended risk</span></button>
+          <button class="tab sub" data-tab="strategies" role="menuitem"><i>6</i><b>STRATEGIES</b><span>library, skill levels, Apex pass rates</span></button>
+          <button class="tab sub" data-tab="trainer" role="menuitem"><i>7</i><b>TRAINER</b><span>champion pipeline and leaderboards</span></button>
+          <button class="tab sub" data-tab="backtest" role="menuitem"><i>8</i><b>BACKTEST</b><span>run a strategy on history</span></button>
+          <button class="tab sub" data-tab="ntlab" role="menuitem"><i>9</i><b>NT LAB</b><span>strategy search with NinjaTrader as the backtest engine</span></button>
+          <button class="tab sub" data-tab="field" role="menuitem"><i>10</i><b>RESEARCH</b><span>field · walk-forward · regimes · execution</span></button>
+          <button class="tab sub" data-tab="wfo" hidden role="menuitem"><i>9</i><b>RESEARCH › WALK-FORWARD</b><span>rolling re-optimise, judged on unseen data</span></button>
+          <button class="tab sub" data-tab="regime" hidden role="menuitem"><i>9</i><b>RESEARCH › REGIMES</b><span>which strategies work in which market</span></button>
+          <button class="tab sub" data-tab="exec" hidden role="menuitem"><i>9</i><b>RESEARCH › EXECUTION</b><span>costs, timing, news blackout</span></button>
+        </div>
+      </div>
+      <div class="tab-menu" id="wealth-menu">
+        <button class="tab-menu-btn" id="wealth-btn" aria-haspopup="true" aria-expanded="false"><i>6</i>WEALTH<span class="crumb" id="wealth-crumb"></span><span class="caret">&#9662;</span></button>
+        <div class="tab-menu-pop hidden" id="wealth-pop" role="menu">
+          <div class="tm-head">WEALTH &middot; ALL YOUR MONEY</div>
+          <button class="tab sub" data-tab="wealth" data-wpage="money" role="menuitem"><i>1</i><b>MONEY</b><span>forecast · health score · net worth · cash flow</span></button>
+          <button class="tab sub" data-tab="wealth" data-wpage="invest" role="menuitem"><i>2</i><b>INVESTMENTS</b><span>goals &amp; missions · holdings · savings · what-if · risk</span></button>
+          <button class="tab sub" data-tab="wealth" data-wpage="spend" role="menuitem"><i>3</i><b>SPENDING</b><span>this month · merchants · budget &amp; transactions</span></button>
+          <button class="tab sub" data-tab="wealth" data-wpage="biz" role="menuitem"><i>4</i><b>BUSINESS</b><span>road to ₪1M · Shopify · businesses for sale</span></button>
+          <div class="tm-head">SETTINGS</div>
+          <button class="tab sub" data-tab="wealth" data-wpage="sec" role="menuitem"><i>5</i><b>SECURITY</b><span>backups · PIN lock · wallet · reports</span></button>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <div class="ticker-tape">
+    <div class="ticker-track" id="ticker-track">
+      <span class="muted small">LOADING QUOTES…</span>
+    </div>
+  </div>
+
+  <div id="trade-popup">
+    <div class="tp-label">TRADE CLOSED</div>
+    <div class="tp-amount">$0.00</div>
+    <div class="tp-pct">0.0%</div>
+    <div class="tp-reason">—</div>
+  </div>
+  <div id="toast-stack"></div>
+
+  <div id="account-modal-backdrop" class="hidden">
+    <div id="account-modal">
+      <div class="modal-header">
+        <div class="panel-title" style="border:none;margin:0;padding:0;">ACCOUNT DETAIL <span id="acc-detail-name" class="muted"></span></div>
+        <button class="btn btn-small" id="btn-close-modal">✕ CLOSE</button>
+      </div>
+      <div class="modal-body">
+        <div id="acc-controls"></div>
+        <div id="acc-eval-card" class="hidden"></div>
+        <div id="acc-position-card" class="hidden"></div>
+        <div id="acc-traderspost-card" class="hidden"></div>
+        <div class="metrics-row" id="acc-metrics"></div>
+        <div class="chart-box chart-box-tall" id="acc-price-chart"></div>
+        <div class="chart-box" id="acc-equity-chart"></div>
+        <table class="data-table" id="acc-trades-table">
+          <thead>
+            <tr><th>ENTRY</th><th>EXIT</th><th>SIDE</th><th>ENTRY PX</th><th>EXIT PX</th><th>REASON</th><th>PNL</th><th>EQUITY</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div id="acc-calendar-section" class="hidden">
+          <div class="cal-header">
+            <button class="btn btn-small" id="cal-prev">◀</button>
+            <span id="cal-title" class="cal-title"></span>
+            <button class="btn btn-small" id="cal-next">▶</button>
+          </div>
+          <div class="cal-grid" id="cal-grid"></div>
+          <div id="cal-day-detail"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main id="app">
+    <nav class="nx-subnav" id="nx-research-nav" hidden aria-label="Research">
+      <b>RESEARCH</b>
+      <button data-go="field">FIELD<small>every candidate on one chart</small></button>
+      <button data-go="wfo">WALK-FORWARD<small>re-optimise, judged on unseen data</small></button>
+      <button data-go="regime">REGIMES<small>which strategy works in which market</small></button>
+      <button data-go="exec">EXECUTION<small>costs, timing, news blackout</small></button>
+    </nav>
+    <!-- CAPITAL: the landing page -->
+    <section class="view active" id="view-capital">
+      <div class="bb-kpis">
+        <div class="bb-kpi"><div class="l">NOSTRO EQUITY</div><div class="v" id="kpi-equity">—</div><div class="s" id="kpi-equity-s">&nbsp;</div></div>
+        <div class="bb-kpi"><div class="l">NOSTRO P&amp;L TODAY</div><div class="v" id="kpi-today">—</div><div class="s" id="kpi-today-s">&nbsp;</div></div>
+        <div class="bb-kpi"><div class="l">OPEN POSITIONS</div><div class="v" id="kpi-open">—</div><div class="s" id="kpi-open-s">&nbsp;</div></div>
+        <div class="bb-kpi"><div class="l">PORTFOLIO VALUE</div><div class="v" id="kpi-pf">—</div><div class="s" id="kpi-pf-s">&nbsp;</div></div>
+        <div class="bb-kpi"><div class="l">PORTFOLIO TODAY</div><div class="v" id="kpi-pfday">—</div><div class="s" id="kpi-pfday-s">&nbsp;</div></div>
+        <div class="bb-kpi"><div class="l">NET WORTH</div><div class="v" id="kpi-nw">—</div><div class="s" id="kpi-nw-s">&nbsp;</div></div>
+        <div class="bb-kpi"><div class="l">FEAR &amp; GREED · NQ</div><div class="v" id="kpi-fg">—</div><div class="s" id="kpi-fg-s">&nbsp;</div></div>
+      </div>
+
+      <div class="bb-grid">
+        <div class="bb-panel s8 hm-acc" style="--i:1">
+          <div class="bb-ph"><span class="bb-n">1</span>NOSTRO ACCOUNTS<span class="sp"></span><span class="meta" id="acc-meta"></span>
+            <button class="bb-chip" id="cap-archived" title="Show archived (burned / retired) accounts too">ARCHIVED</button>
+            <button class="bb-chip on" id="btn-toggle-new-account">+ NEW ACCOUNT</button></div>
+          <div id="new-account-form" class="hidden">
+            <div class="new-account-grid">
+              <div class="form-row">
+                <label>Name</label>
+                <input id="acc-name" type="text" value="demo-1" />
+              </div>
+              <div class="account-type-toggle">
+                <button class="symbol-btn active" data-acctype="standard">STANDARD</button>
+                <button class="symbol-btn" data-acctype="apex_eval">APEX EVALUATION</button>
+              </div>
+              <div class="form-row" id="acc-balance-row">
+                <label>Starting Balance</label>
+                <input id="acc-balance" type="number" value="50000" step="1000" />
+              </div>
+              <div class="form-row hidden" id="acc-tier-row">
+                <label>Tier</label>
+                <select id="acc-tier">
+                  <option value="25000">$25,000</option>
+                  <option value="50000" selected>$50,000</option>
+                  <option value="100000">$100,000</option>
+                  <option value="150000">$150,000</option>
+                </select>
+              </div>
+              <div class="muted small hidden" id="acc-tier-info"></div>
+              <div class="form-row">
+                <label>Daily Loss Limit ($, optional)</label>
+                <input id="acc-daily-loss-limit" type="number" placeholder="none" step="50" min="0" />
+              </div>
+              <div class="form-row">
+                <label>Daily Profit Limit ($, optional)</label>
+                <input id="acc-daily-profit-limit" type="number" placeholder="none" step="50" min="0" />
+              </div>
+            </div>
+            <div class="muted small">Stops opening new trades for the rest of the day once either is hit. Open positions still exit normally.</div>
+            <button class="btn" id="btn-create-account" style="max-width:240px;">OPEN ACCOUNT</button>
+          </div>
+          <div class="bb-pb" id="acc-body"><div class="bb-empty bb-load">LOADING</div></div>
+        </div>
+
+        <div class="bb-panel s4 hm-acc" style="--i:2">
+          <div class="bb-ph"><span class="bb-n">2</span>NOSTRO LIVE<span class="sp"></span><span class="meta" id="hm-live-meta"></span><button class="bb-chip" data-goto="live" title="Open LIVE TRADES">ALL ›</button></div>
+          <div class="bb-pb" id="hm-live"><div class="bb-empty bb-load">LOADING</div></div>
+        </div>
+
+        <div class="bb-panel s4 hm-mid" style="--i:3">
+          <div class="bb-ph"><span class="bb-n">3</span>TOP NEWS<span class="sp"></span><span class="meta" id="news-meta"></span>
+            <div class="bb-chips" id="news-filters"><button class="bb-chip on" data-f="all">ALL</button><button class="bb-chip" data-f="MKT">MKT</button><button class="bb-chip" data-f="MACRO">MACRO</button><button class="bb-chip" data-f="FX">FX</button><button class="bb-chip" data-f="CB">CB</button><button class="bb-chip" data-f="CRYPTO">CRYPTO</button></div>
+            <button class="bb-chip" data-goto="news" title="Open the NEWS page">ALL ›</button>
+          </div>
+          <div class="bb-pb" id="news-body"><div class="bb-empty bb-load">LOADING</div></div>
+        </div>
+
+        <div class="bb-panel s4 hm-mid" style="--i:4">
+          <div class="bb-ph"><span class="bb-n">4</span>POLYMARKET · WHAT THE CROWD BETS ON<span class="sp"></span><span class="meta" id="hm-pm-meta"></span><button class="bb-chip" data-goto="pmx" title="Open POLYMARKET › MARKETS">ALL ›</button></div>
+          <div class="bb-pb" id="hm-pm"><div class="bb-empty bb-load">LOADING</div></div>
+        </div>
+
+        <div class="bb-panel s4 hm-mid" style="--i:5">
+          <div class="bb-ph"><span class="bb-n">5</span>MARKETS<span class="sp"></span><span class="meta" id="hm-mk-meta"></span><button class="bb-chip" data-goto="mkts" title="Open MARKETS">ALL ›</button></div>
+          <div class="bb-pb" id="hm-mk"><div class="bb-empty bb-load">LOADING</div></div>
+        </div>
+
+        <div class="bb-panel s6 hm-pf" style="--i:6">
+          <div class="bb-ph"><span class="bb-n">6</span>PORTFOLIO · STOCKS &amp; CRYPTO<span class="sp"></span><span class="meta" id="pf-meta"></span>
+            <div class="bb-chips" id="pf-filters"><button class="bb-chip on" data-f="all">ALL</button><button class="bb-chip" data-f="stock">STOCKS</button><button class="bb-chip" data-f="crypto">CRYPTO</button></div>
+            <button class="bb-chip on" id="pf-add-toggle" style="margin-left:4px">+ ADD</button>
+          </div>
+          <div class="bb-form hidden" id="pf-form">
+            <div><label>TYPE</label><select id="pf-kind"><option value="stock">STOCK</option><option value="crypto">CRYPTO</option></select></div>
+            <div><label>SYMBOL</label><input id="pf-symbol" placeholder="NVDA / BTC" maxlength="15" /></div>
+            <div><label>QUANTITY</label><input id="pf-qty" type="number" min="0" step="any" placeholder="10" /></div>
+            <div><label>AVG COST (USD)</label><input id="pf-cost" type="number" min="0" step="any" placeholder="150.00" /></div>
+            <button class="bb-go" id="pf-submit">ADD</button>
+            <div class="bb-form-err" id="pf-err"></div>
+          </div>
+          <div class="bb-pb" id="pf-body"><div class="bb-empty bb-load">LOADING</div></div>
+        </div>
+
+        <div class="bb-panel s3 hm-pf" style="--i:7">
+          <div class="bb-ph"><span class="bb-n">7</span>HOT STOCKS<span class="sp"></span>
+            <div class="bb-chips" id="hs-tabs"><button class="bb-chip on" data-f="hot">HOT</button><button class="bb-chip" data-f="gainers">UP</button><button class="bb-chip" data-f="losers">DOWN</button></div>
+          </div>
+          <div class="bb-pb" id="hs-body"><div class="bb-empty bb-load">LOADING</div></div>
+        </div>
+
+        <div class="bb-panel s3 hm-pf" style="--i:8">
+          <div class="bb-ph"><span class="bb-n">8</span>HOT COINS<span class="sp"></span>
+            <div class="bb-chips" id="hc-tabs"><button class="bb-chip on" data-f="trending">TREND</button><button class="bb-chip" data-f="gainers">UP</button><button class="bb-chip" data-f="losers">DOWN</button></div>
+          </div>
+          <div class="bb-pb" id="hc-body"><div class="bb-empty bb-load">LOADING</div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ACCOUNTS / HOME -->
+    <section class="view" id="view-accounts">
+      <div class="metrics-row" id="dash-metrics">
+        <div class="metric-tile"><div class="label">TOTAL EQUITY</div><div class="value" id="dash-total-equity">—</div><div id="dash-equity-spark" style="margin-top:4px;height:26px;"></div></div>
+        <div class="metric-tile"><div class="label">TODAY'S P&amp;L</div><div class="value" id="dash-today-pnl">—</div></div>
+        <div class="metric-tile"><div class="label">TODAY'S P&amp;L %</div><div class="value" id="dash-today-pnl-pct">—</div></div>
+        <div class="metric-tile"><div class="label">OPEN POSITIONS</div><div class="value" id="dash-open-positions">—</div></div>
+        <div class="metric-tile"><div class="label">LIVE ACCOUNTS</div><div class="value" id="dash-live-accounts">—</div></div>
+        <div class="metric-tile"><div class="label">TRADES TODAY</div><div class="value" id="dash-today-trades">—</div></div>
+      </div>
+
+      <div class="panel-row">
+        <div class="panel panel-full panel-accent" id="accounts-panel">
+          <div class="panel-title">
+            TRADING ACCOUNTS <span class="muted small" id="accounts-count"></span>
+            <button class="btn-link" id="btn-toggle-archived"><span id="archived-toggle-label">SHOW</span> ARCHIVED (<span id="archived-count">0</span>)</button>
+          </div>
+          <div class="accounts-grid" id="accounts-grid"></div>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="panel panel-narrow panel-accent">
+          <div class="panel-title">FEAR &amp; GREED — NQ</div>
+          <div class="fg-gauge-wrap">
+            <div id="fg-gauge"></div>
+            <div class="fg-value" id="fg-value">—</div>
+            <div class="fg-label" id="fg-label">LOADING…</div>
+          </div>
+          <div class="fg-components muted small" id="fg-components"></div>
+          <div class="trainer-today-stat" id="trainer-today-stat">
+            <div class="trainer-today-line">🎓 <span id="trainer-today-runs">—</span> cycles trained today</div>
+            <div class="trainer-today-line muted small"><span id="trainer-today-backtests">—</span> backtests evaluated</div>
+          </div>
+        </div>
+        <div class="panel panel-wide panel-accent">
+          <div class="panel-title">TODAY'S TRADES</div>
+          <div id="today-trades-empty" class="muted pad">No trades yet today.</div>
+          <table class="data-table hidden" id="today-trades-table">
+            <thead>
+              <tr><th>TIME</th><th>ACCOUNT</th><th>SYMBOL</th><th>SIDE</th><th>REASON</th><th>PNL</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="panel panel-full panel-accent" id="open-positions-panel">
+          <div class="panel-title">📡 OPEN POSITIONS — LIVE <span class="pill pill-live" style="margin-left:8px;">tracking</span></div>
+          <div id="open-positions-empty" class="muted pad">No open positions right now.</div>
+          <table class="data-table hidden" id="open-positions-table">
+            <thead>
+              <tr>
+                <th>ACCOUNT</th><th>SYMBOL</th><th>STRATEGY</th><th>SIDE</th><th>ENTRY TIME</th>
+                <th>ENTRY PX</th><th>CURRENT PX</th><th>SL / TP</th><th>UNREALIZED P&amp;L</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="panel panel-full panel-accent" id="equity-comparison-panel">
+          <div class="panel-title">📈 ALL ACCOUNTS — EQUITY COMPARISON</div>
+          <div id="equity-comparison-empty" class="muted pad">No accounts to compare yet.</div>
+          <div id="equity-comparison-chart" class="hidden" style="height:280px;"></div>
+          <div id="equity-comparison-legend" class="equity-legend hidden"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STRATEGIES -->
+  <section class="view" id="view-mkts"></section>
+  <section class="view" id="view-news"></section>
+  <section class="view" id="view-pmx"></section>
+    <section class="view" id="view-stocks"></section>
+    <section class="view" id="view-crypto"></section>
+    <section class="view" id="view-funds"></section>
+    <section class="view" id="view-fxc"></section>
+    <section class="view" id="view-econ"></section>
+    <section class="view" id="view-security"></section>
+    <section class="view" id="view-fund"></section>
+    <section class="view" id="view-world"></section>
+    <section class="view" id="view-newstv"></section>
+    <section class="view" id="view-onchain"></section>
+    <section class="view" id="view-academy"></section>
+    <section class="view" id="view-sim"></section>
+    <section class="view" id="view-journal"></section>
+    <section class="view" id="view-polymarket"></section>
+    <section class="view" id="view-acct"></section>
+    <section class="view" id="view-hot"></section>
+    <section class="view" id="view-wall"></section>
+    <section class="view" id="view-connect"></section>
+    <section class="view" id="view-rwas"></section>
+    <section class="view" id="view-slab"></section>
+    <section class="view" id="view-flow"></section>
+    <section class="view" id="view-bmap"></section>
+    <section class="view" id="view-wealth"></section>
+    <section class="view" id="view-cal"></section>
+    <section class="view" id="view-rates"></section>
+    <section class="view" id="view-eqs"></section>
+    <section class="view" id="view-heat"></section>
+    <section class="view" id="view-ana"></section>
+    <section class="view" id="view-opts"></section>
+    <section class="view" id="view-port"></section>
+    <section class="view" id="view-alrt"></section>
+    <section class="view" id="view-wksp"></section>
+    <section class="view" id="view-wfo"></section>
+    <section class="view" id="view-regime"></section>
+    <section class="view" id="view-jrnl"></section>
+    <section class="view" id="view-exec"></section>
+        <section class="view" id="view-live">
+      <div class="bb-kpis" id="live-tiles">
+        <div class="bb-kpi"><div class="l">NET P&amp;L</div><div class="v value" id="lt-net">—</div><div class="s" id="live-feed-sub">every trade the system takes, updating live</div></div>
+        <div class="bb-kpi"><div class="l">TRADES</div><div class="v value" id="lt-trades">—</div><div class="s">closed in range</div></div>
+        <div class="bb-kpi"><div class="l">WIN RATE</div><div class="v value" id="lt-wr">—</div><div class="s">of closed trades</div></div>
+        <div class="bb-kpi"><div class="l">PROFIT FACTOR</div><div class="v value" id="lt-pf">—</div><div class="s">gross win / gross loss</div></div>
+        <div class="bb-kpi"><div class="l">AVG R</div><div class="v value" id="lt-r">—</div><div class="s">per trade, in risk units</div></div>
+        <div class="bb-kpi"><div class="l">OPEN NOW</div><div class="v value" id="lt-open">—</div><div class="s">positions being tracked</div></div>
+      </div>
+
+      <div class="bb-grid">
+        <div class="bb-panel s8 tall" style="--i:1">
+          <div class="bb-ph"><span class="bb-n">1</span>ALL TRADES<span class="live-dot busy" id="live-feed-dot" title="flashes when a new trade arrives"></span><span class="sp"></span>
+            <div class="bb-chips symbol-toggle" id="live-range-toggle">
+              <button class="symbol-btn active" data-range="today">TODAY</button>
+              <button class="symbol-btn" data-range="7d">7D</button>
+              <button class="symbol-btn" data-range="all">ALL</button>
+            </div>
+          </div>
+          <div class="bb-pb">
+            <div class="bb-empty hidden" id="live-trades-empty"><b>NO LIVE TRADES YET</b>Closed trades appear here the moment they happen.</div>
+            <table class="bb-tbl hidden" id="live-trades-table">
+              <thead><tr><th>CLOSED</th><th>ACCOUNT</th><th>STRATEGY</th><th>SYM</th><th>SIDE</th><th class="r">QTY</th><th>EXIT</th><th class="r">P&amp;L</th><th class="r">R</th></tr></thead>
+              <tbody id="live-trades-body"></tbody>
+            </table>
+            <button class="bb-chip hidden" id="live-load-more" style="margin:10px;">LOAD OLDER</button>
+          </div>
+        </div>
+
+        <div class="bb-col s4">
+          <div class="bb-panel" style="--i:2">
+            <div class="bb-ph"><span class="bb-n">2</span>OPEN POSITIONS<span class="sp"></span><span class="meta">tracking live</span></div>
+            <div class="bb-pb bb-pad">
+              <div class="bb-empty" id="live-open-empty" style="min-height:70px"><b>FLAT</b>No open positions right now.</div>
+              <div class="live-open-strip" id="live-open"></div>
+            </div>
+          </div>
+          <div class="bb-panel" style="--i:3">
+            <div class="bb-ph"><span class="bb-n">3</span>BY STRATEGY</div>
+            <div class="bb-pb bb-pad" id="live-by-strategy"><span class="muted">—</span></div>
+          </div>
+          <div class="bb-panel" style="--i:4">
+            <div class="bb-ph"><span class="bb-n">4</span>CUMULATIVE P&amp;L</div>
+            <div class="bb-pb bb-pad"><div class="chart-box" style="height:96px;" id="live-cum-spark"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-strategies">
+      <div class="bb-kpis" id="strat-kpis"></div>
+      <div class="bb-panel" style="--i:1">
+        <div class="bb-ph"><span class="bb-n">1</span>STRATEGY LIBRARY<span class="sp"></span><span class="meta" id="strat-meta"></span>
+          <div class="bb-chips" id="strat-sort">
+            <button class="bb-chip on" data-sort="level">LEVEL</button><button class="bb-chip" data-sort="learn">LEARNED</button>
+            <button class="bb-chip" data-sort="apex">APEX</button><button class="bb-chip" data-sort="trades">TRADES</button><button class="bb-chip" data-sort="name">A-Z</button>
+          </div>
+        </div>
+        <div class="bb-pb" id="strategy-list"></div>
+      </div>
+    </section>
+
+    <!-- BACKTEST -->
+    <section class="view" id="view-ntlab"></section>
+    <section class="view" id="view-backtest">
+      <div class="panel-row">
+        <div class="panel panel-narrow">
+          <div class="panel-title">BACKTEST CONFIG</div>
+          <div class="form-row"><label>Symbol</label>
+            <select id="bt-symbol"><option value="NQ">NQ</option><option value="ES">ES</option></select>
+          </div>
+          <div class="form-row"><label>Strategy</label>
+            <select id="bt-strategy"></select>
+          </div>
+          <div class="form-row"><label>Interval</label>
+            <select id="bt-interval">
+              <option value="5m" selected>5m</option>
+              <option value="15m">15m</option>
+              <option value="30m">30m</option>
+            </select>
+          </div>
+          <div class="form-row"><label>Lookback (days)</label>
+            <input id="bt-lookback" type="number" value="60" />
+          </div>
+          <div class="form-row"><label>Starting Balance</label>
+            <input id="bt-balance" type="number" value="50000" step="1000" />
+          </div>
+          <div class="form-row"><label>Entry Style</label>
+            <select id="bt-entry-style">
+              <option value="market" selected>Market (instant fill)</option>
+              <option value="limit">Limit (favorable fill, no-fill risk not modeled)</option>
+            </select>
+          </div>
+          <div class="form-row"><label>Higher-TF Confirm Bars</label>
+            <input id="bt-htf-confirm" type="number" value="0" min="0" step="1" />
+          </div>
+          <div class="muted small">0 = disabled. N = require N consecutive same-direction candles on a 4x-higher timeframe before entry.</div>
+          <div id="bt-params"></div>
+          <button class="btn" id="btn-run-backtest">RUN BACKTEST</button>
+        </div>
+        <div class="panel panel-wide">
+          <div class="panel-title">RESULTS</div>
+          <div id="bt-empty" class="empty-state">
+            <div class="empty-state-icon">📊</div>
+            <div class="empty-state-title">No backtest run yet</div>
+            <div class="empty-state-sub">Pick a symbol, strategy, and lookback window on the left,<br>then hit RUN BACKTEST — metrics, equity curve, and every trade will show up here.</div>
+          </div>
+          <div id="bt-results" class="hidden">
+            <div class="metrics-row" id="bt-metrics"></div>
+            <div class="chart-box" id="bt-equity-chart"></div>
+          </div>
+        </div>
+      </div>
+      <div class="panel hidden" id="bt-price-panel">
+        <div class="panel-title">PRICE — ENTRIES (▲/▼) · SL/TP IN MARKER TOOLTIP · EXIT (●) · SETUP DRAWN ON CHART</div>
+        <div class="chart-box chart-box-tall" id="bt-price-chart"></div>
+        <div class="chart-box hidden" id="bt-indicator-pane" style="height:110px; margin-top:6px;"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">TRADES</div>
+        <table class="data-table" id="bt-trades-table">
+          <thead>
+            <tr><th>ENTRY</th><th>EXIT</th><th>SIDE</th><th>ENTRY PX</th><th>EXIT PX</th><th>REASON</th><th>PNL</th><th>EQUITY</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- TRAINER -->
+    <section class="view" id="view-trainer">
+      <div class="panel live-bar">
+        <div class="live-dot-wrap"><span class="live-dot" id="live-dot"></span> <span id="live-text">CONNECTING…</span></div>
+        <div class="live-stat"><span class="muted small">TOTAL RUNS</span><span id="live-total-runs">—</span></div>
+        <div class="live-stat"><span class="muted small">NEXT CYCLE</span><span id="live-next-run">—</span></div>
+        <div class="live-stat"><span class="muted small">LAST RUN</span><span id="live-last-run">—</span></div>
+        <span class="spacer"></span>
+        <div class="symbol-toggle" id="symbol-toggle">
+          <button class="symbol-btn active" data-symbol="NQ">NQ</button>
+          <button class="symbol-btn" data-symbol="ES">ES</button>
+        </div>
+        <button class="btn btn-small" id="btn-run-now">⚡ RUN NOW</button>
+        <div class="live-progress-wrap hidden" id="live-progress-wrap">
+          <div class="live-progress-track"><div class="live-progress-fill" id="live-progress-fill"></div></div>
+          <div class="live-progress-label muted small" id="live-progress-label"></div>
+        </div>
+      </div>
+
+      <div class="panel panel-glow hero-panel" id="trainer-hero">
+        <div class="panel-title">
+          <span class="trophy">🏆</span> CHAMPION — BEST STRATEGY FOUND SO FAR (OUT-OF-SAMPLE)
+          <button class="btn-link" id="btn-toggle-herocycle" style="float:right;">⏸ PAUSE AUTO-CYCLE</button>
+        </div>
+
+        <div id="hero-training" class="hero-status">
+          <div class="scan-line"></div>
+          <div class="hero-status-text" id="hero-status-text">INITIALIZING…</div>
+          <div class="hero-status-sub" id="hero-status-sub">The background trainer is running its first cycle — this only happens once.</div>
+        </div>
+
+        <div id="hero-replay" class="hidden">
+          <div class="champion-line" id="champion-line"></div>
+          <div class="champion-why muted small" id="champion-why"></div>
+          <div class="champion-params" id="champion-params"></div>
+          <div class="muted small" id="hero-cycle-status" style="margin-top:2px;"></div>
+          <div class="replay-controls">
+            <button class="btn" id="btn-replay-play">▶ PLAY</button>
+            <button class="btn" id="btn-replay-pause">⏸ PAUSE</button>
+            <button class="btn" id="btn-replay-restart">↻ RESTART</button>
+            <button class="speed-btn" data-speed="1">1x</button>
+            <button class="speed-btn" data-speed="2">2x</button>
+            <button class="speed-btn active" data-speed="4">4x</button>
+            <button class="speed-btn" data-speed="8">8x</button>
+            <div class="replay-equity">EQUITY <span class="amt" id="replay-equity-amt">$50,000</span></div>
+          </div>
+          <div class="chart-box chart-box-tall" id="replay-chart"></div>
+          <div class="chart-box hidden" id="replay-indicator-pane" style="height:110px; margin-top:6px;"></div>
+          <div class="metrics-row hidden" id="hero-metrics"></div>
+          <div class="hidden lab-fade" id="hero-montecarlo" style="margin-top:10px;"></div>
+        </div>
+      </div>
+
+      <div class="panel panel-accent" id="pipeline-panel">
+        <div class="panel-title">CHAMPION PIPELINE <span class="pill pill-idle" id="pipeline-version">v0</span></div>
+        <div class="pipeline-cards" id="pipeline-cards"></div>
+        <div class="pipeline-why" id="pipeline-why"></div>
+      </div>
+
+      <div class="panel-row">
+        <div class="panel panel-narrow panel-accent">
+          <div class="panel-title">TRAINING HISTORY</div>
+          <div class="chart-box" style="height:80px;" id="history-sparkline"></div>
+          <div id="history-list"></div>
+        </div>
+        <div class="panel panel-wide panel-accent">
+          <div class="panel-title">🧠 10 TRAINED MODELS — LIVE LEADERBOARD <span class="muted small" id="all-status"></span></div>
+          <div id="all-empty" class="muted pad">Waiting on the first training run…</div>
+          <div class="model-grid hidden" id="all-cards"></div>
+        </div>
+      </div>
+
+      <div class="panel hidden" id="strategy-lab-panel">
+        <div class="panel-title">
+          🔬 STRATEGY LAB — <span id="lab-strategy-name"></span>
+          <span id="lab-verdict-badge" class="pill" style="margin-left:8px;"></span>
+        </div>
+        <div class="muted small" id="lab-params"></div>
+        <div class="chart-box lab-fade" id="lab-equity-chart" style="height:160px; margin-top:10px;"></div>
+        <div class="metrics-row" id="lab-metrics" style="margin-top:10px;"></div>
+        <div class="muted small" id="lab-fold-scores" style="margin-top:6px;"></div>
+
+        <div class="panel-row" style="margin-top:14px;">
+          <div class="panel panel-narrow">
+            <div class="panel-title">VaR / CVaR — MONTE CARLO (bootstrap-resampled trades)</div>
+            <button class="btn" id="btn-run-montecarlo">RUN 1,000 SIMULATIONS</button>
+            <div id="lab-mc-status" class="muted small" style="margin-top:6px;"></div>
+            <div id="lab-mc-results" class="hidden" style="margin-top:10px;"></div>
+          </div>
+          <div class="panel panel-wide">
+            <div class="panel-title">STRESS TEST — REAL HISTORICAL CRASH WINDOWS</div>
+            <button class="btn" id="btn-run-stresstest">RUN CRASH WINDOWS</button>
+            <div id="lab-stress-status" class="muted small" style="margin-top:6px;"></div>
+            <table class="data-table hidden" id="lab-stress-table" style="margin-top:10px;">
+              <thead><tr><th>WINDOW</th><th>DATES</th><th>TRADES</th><th>RETURN</th><th>MAX DD</th><th>BURNED?</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="panel panel-narrow">
+          <div class="panel-title">MANUAL PARAMETER SEARCH</div>
+          <div class="muted small pad">Run a walk-forward search on one strategy by hand instead of the full auto-trainer.</div>
+          <div class="form-row"><label>Symbol</label>
+            <select id="opt-symbol"><option value="NQ">NQ</option><option value="ES">ES</option></select>
+          </div>
+          <div class="form-row"><label>Strategy</label>
+            <select id="opt-strategy"></select>
+          </div>
+          <div class="form-row"><label>Interval</label>
+            <select id="opt-interval">
+              <option value="5m" selected>5m</option>
+              <option value="15m">15m</option>
+              <option value="30m">30m</option>
+            </select>
+          </div>
+          <div class="form-row"><label>Lookback (days)</label>
+            <input id="opt-lookback" type="number" value="60" />
+          </div>
+          <div class="form-row"><label>Iterations</label>
+            <input id="opt-iterations" type="number" value="300" />
+          </div>
+          <div class="form-row"><label>Train / Test split</label>
+            <input id="opt-trainfrac" type="number" value="0.7" step="0.05" min="0.3" max="0.9" />
+          </div>
+          <button class="btn" id="btn-run-optimize">RUN TRAINING SEARCH</button>
+          <div class="muted small pad" id="opt-status"></div>
+        </div>
+        <div class="panel panel-wide">
+          <div class="panel-title">LEADERBOARD (ranked by out-of-sample score)</div>
+          <div id="opt-empty" class="muted pad">Run a training search to see results.</div>
+          <table class="data-table hidden" id="opt-table">
+            <thead>
+              <tr>
+                <th>#</th><th>PARAMS</th>
+                <th>TRAIN PF</th><th>TRAIN WIN%</th>
+                <th>TEST PF</th><th>TEST WIN%</th><th>TEST TRADES</th><th>SCORE</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="panel-row">
+        <div class="panel panel-narrow panel-accent">
+          <div class="panel-title">LONG-HORIZON TRAINER (multi-year)</div>
+          <div class="muted small pad">
+            Trains on the OLDER of two ~1-year windows, validates on the NEWER —
+            a much bigger out-of-sample test than the 60-day fast trainer.
+            Uses free tick data from <strong>Dukascopy</strong> (their own
+            NQ/ES-tracking index CFD, not the CME futures contract used
+            elsewhere) since Yahoo's free API caps 5m/15m/30m data at 60 days.
+            A fresh backfill is slow the first time (fetches years of data),
+            fast after — it's cached.
+          </div>
+          <div class="form-row"><label>Symbol</label>
+            <select id="lh-symbol"><option value="NQ">NQ</option><option value="ES">ES</option></select>
+          </div>
+          <div class="form-row"><label>Interval</label>
+            <select id="lh-interval">
+              <option value="5m">5m</option>
+              <option value="15m" selected>15m</option>
+              <option value="30m">30m</option>
+            </select>
+          </div>
+          <div class="form-row"><label>Years of history</label>
+            <input id="lh-years" type="number" value="2" min="1" max="2" />
+          </div>
+          <div class="form-row"><label>Iterations / strategy</label>
+            <input id="lh-iterations" type="number" value="150" />
+          </div>
+          <button class="btn" id="btn-run-long-horizon">🕐 RUN LONG-HORIZON TRAINING</button>
+          <div class="muted small pad" id="lh-status"></div>
+        </div>
+        <div class="panel panel-wide panel-accent">
+          <div class="panel-title">LONG-HORIZON LEADERBOARD <span class="muted small" id="lh-meta"></span></div>
+          <div id="lh-empty" class="muted pad">Run the long-horizon trainer to see results — this can take a while on first use (fetching years of data), then caches.</div>
+          <table class="data-table hidden" id="lh-table">
+            <thead>
+              <tr>
+                <th>#</th><th>STRATEGY</th><th>PARAMS</th>
+                <th>TRAIN PF</th><th>TEST PF</th><th>TEST WIN%</th><th>TEST TRADES</th><th>SCORE</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHART -->
+    <section class="view" id="view-field">
+      <div class="panel live-bar">
+        <div>
+          <div class="panel-title" style="margin:0;border:0;padding:0;font-size:15px;">THE FIELD</div>
+          <div class="muted small">Every strategy candidate: win rate against average reward-to-risk. Colour is expectancy per trade. Survivors glow.</div>
+        </div>
+        <div class="spacer"></div>
+        <div class="symbol-toggle" id="field-mode-toggle">
+          <button class="symbol-btn active" data-mode="net">NET</button>
+          <button class="symbol-btn" data-mode="gross">GROSS</button>
+        </div>
+        <div class="symbol-toggle" id="field-controls-toggle">
+          <button class="symbol-btn active" data-show="1">SHOW CONTROLS</button>
+          <button class="symbol-btn" data-show="0">HIDE CONTROLS</button>
+        </div>
+      </div>
+
+      <div class="panel field-controls" id="field-controls">
+        <div class="symbol-toggle" id="field-symbol-toggle">
+          <button class="symbol-btn active" data-symbol="NQ">NQ</button>
+          <button class="symbol-btn" data-symbol="ES">ES</button>
+        </div>
+        <label class="muted small">WINDOW
+          <select class="inline-select" id="field-hours">
+            <option value="1">last 1 h</option><option value="6">last 6 h</option>
+            <option value="24" selected>last 24 h</option><option value="48">last 48 h</option><option value="0">all time</option>
+          </select></label>
+        <label class="muted small">STRATEGY
+          <select class="inline-select" id="field-strategy"><option value="">all strategies</option></select></label>
+        <span class="muted small" id="field-meta"></span>
+      </div>
+
+      <div class="field-layout">
+        <div class="panel field-canvas-panel">
+          <div class="field-legend">
+            <span><i class="fl-dot" style="background:#5a6b80"></i>strategies</span>
+            <span><i class="fl-dot fl-halo"></i>survivor halo</span>
+            <span><i class="fl-dot" style="background:#3ddc97"></i>survivors</span>
+            <span><i class="fl-line" style="border-color:#3fd1ff"></i>break-even (gross)</span>
+            <span><i class="fl-line" style="border-color:#ff8f6b"></i>break-even after median cost-in-R <b id="field-cost-r">-</b></span>
+          </div>
+          <div class="field-chart" id="field-chart"></div>
+          <div class="field-tooltip hidden" id="field-tooltip"></div>
+        </div>
+        <div class="panel field-stats">
+          <div class="fs-block"><div class="fs-label">THE FIELD</div><div class="fs-value" id="fs-field">-</div></div>
+          <div class="fs-block"><div class="fs-label">SURVIVORS</div><div class="fs-value green" id="fs-surv">-</div></div>
+          <div class="fs-block"><div class="fs-label">GROSS-POSITIVE</div><div class="fs-value blue" id="fs-gp">-</div></div>
+          <div class="fs-block"><div class="fs-label">NET-POSITIVE</div><div class="fs-value blue" id="fs-np">-</div></div>
+          <div class="fs-block"><div class="fs-label">GROSS-POSITIVE BUT NET-NEGATIVE</div><div class="fs-value coral" id="fs-gpnn">-</div></div>
+          <div class="muted small" id="fs-note">Dashed sky line: break-even win rate 1/(1+RR). Dashed coral line: break-even after the field's median cost-in-R.</div>
+          <div class="fs-selected" id="field-selected"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-chart">
+      <div class="panel">
+        <div class="panel-title">
+          PRICE
+          <select id="chart-symbol" class="inline-select"><option value="NQ">NQ</option><option value="ES">ES</option></select>
+          <select id="chart-interval" class="inline-select">
+            <option value="5m" selected>5m</option>
+            <option value="15m">15m</option>
+            <option value="30m">30m</option>
+          </select>
+          <button class="btn btn-small" id="btn-load-chart">LOAD</button>
+        </div>
+        <div class="chart-box chart-box-tall" id="price-chart"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="statusbar">
+    <span id="status-text">READY</span>
+    <span class="spacer"></span>
+    <span>DATA: YAHOO FINANCE (FREE, DELAYED)</span>
+  </footer>
+
+  <script src="dashboard.js?v=20261021a"></script>
+  <script src="loader.js?v=20261030b"></script>
+  <script src="invest.js?v=20261022a"></script>
+  <script src="analytics.js?v=20260921z"></script>
+  <script src="tools.js?v=20261011j"></script>
+  <script src="capital.js?v=20261022g"></script>
+  <script src="spider.js?v=20261022h"></script>
+  <script src="ui_kit.js?v=20260928a"></script>
+  <script src="sidedock.js?v=20261022b"></script>
+  <script src="shell.js?v=20261003a"></script>
+</body>
+</html>

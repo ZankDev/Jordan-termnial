@@ -1,0 +1,33 @@
+# secrets — real keys live only on this PC (run.example.bat is the template)
+run.bat
+.env
+*.env
+.claude/settings.local.json
+
+# private data: database, backups, market data cache, logs, browser profiles
+data_cache/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.log
+o.json
+acc_test.json
+
+# Python environment and build junk
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# generated (rebuild with: graphify update .)
+graphify-out/
+
+# separate git repositories kept next to this project (not part of it)
+jev-ultrafast/
+hyperfrequency-skills/
+PolyMarket/
+trading_skills/
+
+# runtime locks
+.claude/scheduled_tasks.lock
