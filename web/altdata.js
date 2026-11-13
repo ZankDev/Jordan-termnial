@@ -150,7 +150,9 @@
     try { S.alerts = await api("/altdata/alerts"); } catch (e) { $("#ad-aln").textContent = "!"; return; }
     const n = S.alerts.alerts.length; $("#ad-aln").textContent = String(n); $("#ad-alb").classList.toggle("hot", S.alerts.alerts.some((a) => a.sev >= 3));
     renderAlerts();
-    if (!S.shown && n) { S.shown = true; modal(true); }
+    // auto-open once, but never over the page menu (phones) or after you already left ALT DATA: it would block navigation
+    const here = $("#view-altdata")?.classList.contains("active") && !document.body.classList.contains("nav-open");
+    if (!S.shown && n && here) { S.shown = true; modal(true); }
   }
   function renderAlerts() {
     const a = S.alerts; if (!a) return;
