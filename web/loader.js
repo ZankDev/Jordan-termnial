@@ -34,9 +34,10 @@
     wall: ["wall.js?v=20261003d"],
     connect: ["connect.js?v=20261004b"],
     rwas: ["rwas.js?v=20261002b"],
+    evmap: ["events_map.js?v=20261113b"],
   };
   const TAB_GROUP = { security: "security", fund: "fund", journal: "journal", polymarket: "polymarket", pmx: "pmx", ntlab: "ntlab", acct: "acct", hot: "hot",
-    slab: "slab", live: "live", flow: "flow", wealth: "wealth", wall: "wall", connect: "connect", rwas: "rwas" };
+    slab: "slab", live: "live", flow: "flow", wealth: "wealth", wall: "wall", connect: "connect", rwas: "rwas", evmap: "evmap" };
 
   const loaded = new Set(), pending = new Map(), BEFORE = {};
   function script(src) {

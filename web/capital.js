@@ -116,6 +116,7 @@
     { code: "WIRP", tab: "rates", sub: "wirp", desc: "MARKETS › RATES — Fed rate path from futures", alias: ["FED", "FOMC"] },
     { code: "EQS", tab: "eqs", desc: "MARKETS › SCREENER — equity screener", alias: ["SCREENER", "SCREEN"] },
     { code: "REAL", tab: "connect", desc: "NOSTRO › REAL ACCOUNT SETUP — connect TradersPost + Telegram, signals sent, real balance", alias: ["CONNECT", "SETUP", "WEBHOOK", "TELEGRAM"] },
+    { code: "WMAP", tab: "evmap", desc: "WORLD › EVENTS MAP — live quakes, hurricanes, GDACS / NASA hazards, radar + market impact", alias: ["WORLD", "EVENTS", "QUAKES", "QUAKE", "HURRICANE", "HURRICANES", "STORMS", "GDACS", "WEATHER"] },
     { code: "RWAS", tab: "rwas", desc: "MARKETS › RWAS — stablecoin supply, mints and burns, by chain and peg type", alias: ["STABLECOINS", "STABLES", "USDT"] },
     { code: "WALL", tab: "wall", desc: "MARKETS › LIVE WALL — up to 50 live charts from your watchlist", alias: ["LIVEWALL", "CHARTS"] },
     { code: "IMAP", tab: "heat", desc: "MARKETS › HEATMAP — S&P 500 / Nasdaq-100 treemap", alias: ["HEATMAP", "MAP"] },
@@ -301,6 +302,7 @@
   const TOP_PAGES = {
     capital: ["HOME", "your trading, money, news and markets at a glance"],
     news: ["NEWS", "every headline that can move a price · what actually moved · what is coming"],
+    evmap: ["WORLD › EVENTS MAP", "live earthquakes, storms, natural hazards and radar · which markets each one can move"],
   };
   function pageHead(tab) {
     let el = document.getElementById("nx-phead");

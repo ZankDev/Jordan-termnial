@@ -95,6 +95,9 @@ from app.api.bmap_routes import router as bmap_router, warm as bmap_warm  # noqa
 app.include_router(flow_router)
 app.include_router(bmap_router)
 from app.api.wealth_routes import router as wealth_router  # noqa: E402
+from app.api.world_live_routes import router as world_live_router, warm as world_live_warm  # noqa: E402
+
+app.include_router(world_live_router)
 
 app.include_router(wealth_router)
 
@@ -274,6 +277,8 @@ async def _launch_background_loops() -> None:
         asyncio.create_task(gamma_worker.worker_loop())  # NQ vs VWAP vs gamma walls: Telegram alerts + PAPER 1:2 entries, every 30 s
     if "academy" in enabled:
         academy_warm()  # download history + build the Wyckoff setup library in a thread
+    if os.environ.get("NOSTRO_EVENTS_WARM", "1") != "0":
+        world_live_warm()  # EVENTS MAP feeds (USGS / NHC / GDACS / EONET) prefetched once so the first open is instant
     if "world" in enabled:
         world_warm()  # OpenSky / adsb.lol samplers + cache prefetch (threads)
         bmap_warm()  # AIS ship stream (when a key is configured) + power-plant file
