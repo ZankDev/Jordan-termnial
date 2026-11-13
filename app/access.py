@@ -13,6 +13,7 @@ import base64
 import hashlib
 import hmac
 import json
+import os
 import secrets
 import time
 
@@ -28,11 +29,19 @@ def _hash(password: str, salt: bytes) -> str:
     return base64.b64encode(hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 200_000)).decode()
 
 
+def _env_pw() -> str:
+    # deploy-time override (e.g. Railway variable); takes precedence over the DB-stored password
+    return os.environ.get("NOSTRO_ACCESS_PASSWORD", "")
+
+
 def enabled() -> bool:
-    return bool(db.meta_get("access_password"))
+    return bool(_env_pw() or db.meta_get("access_password"))
 
 
 def check(password: str) -> bool:
+    env = _env_pw()
+    if env:
+        return hmac.compare_digest(password.encode(), env.encode())
     raw = db.meta_get("access_password")
     if not raw:
         return True
