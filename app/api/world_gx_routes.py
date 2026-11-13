@@ -190,3 +190,22 @@ def api_sats(group: str = "stations"):
 @router.get("/credits")
 def api_credits():
     return {"credits": godseye.CREDITS}
+
+
+# ------------------------------------------------------------------ supply-chain cause graph (WORLD › SUPPLY CHAIN)
+@router.get("/supply")
+def api_supply(chain: str = "crude", days: int = 5):
+    from app.world import supply_graph
+
+    days = max(1, min(20, days))
+    try:
+        key = f"gx:supply:{chain}:{days}"
+        d = cached(key, 120, lambda: supply_graph.build(chain, days))
+        if not d["live"].get("risk"):  # chokepoint risk screen still warming up: do not keep an all-UNKNOWN graph for 2 minutes
+            from app.api import capital_routes as cr
+
+            with cr._lock:  # noqa: SLF001
+                cr._cache.pop(key, None)  # noqa: SLF001
+        return d
+    except KeyError as e:
+        raise HTTPException(status_code=404, detail=f"unknown chain {chain}") from e
