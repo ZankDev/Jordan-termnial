@@ -101,6 +101,9 @@ app.include_router(world_live_router)
 from app.api.world_gx_routes import router as world_gx_router  # noqa: E402
 
 app.include_router(world_gx_router)
+from app.api.cause_routes import router as cause_router  # noqa: E402
+
+app.include_router(cause_router)
 
 app.include_router(wealth_router)
 

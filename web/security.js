@@ -39,6 +39,7 @@
 
   // ------------------------------------------------------------------ entry points
   window.initSecurityTab = () => { if (!sx.symbol) renderEmpty(); };
+  NX.curSecurity = () => sx.symbol; // WHY? (cause.js) reads the open security from here
 
   window.openSecurity = (symbol, fn) => {
     const btn = document.querySelector('.tab[data-tab="security"]');

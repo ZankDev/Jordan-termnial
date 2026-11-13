@@ -18,7 +18,7 @@
   const CDN = "https://cdn.jsdelivr.net/npm/";
   const GROUPS = {
     pdf: [`${CDN}html2canvas@1.4.1/dist/html2canvas.min.js`, `${CDN}jspdf@2.5.2/dist/jspdf.umd.min.js`],
-    security: ["gp.js?v=20261010b", "deep.js?v=20261003d", "report.js?v=20261021a", "security.js?v=20261022a"],
+    security: ["gp.js?v=20261010b", "deep.js?v=20261003d", "report.js?v=20261021a", "security.js?v=20261113a"],
     fund: ["fund.js?v=20261009b"],
     journal: ["journal.js?v=20261011c"],
     polymarket: ["pm_chart.js?v=20260924a", "polymarket.js?v=20260925b"],
