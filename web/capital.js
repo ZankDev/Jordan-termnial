@@ -246,36 +246,99 @@
   window.runAi = runAi;
   document.addEventListener("keydown", (e) => { if (e.key === "Escape" && $("#nx-ai")) $("#nx-ai").remove(); });
 
-  // every drop-down menu (INVESTING, NOSTRO): opens on hover or click, closes on outside click / Esc / picking an item
+  // phone / tablet width (same breakpoint as the drawer CSS in bloomberg.css): the nav is a full-screen menu and the
+  // drop-downs become tap-to-expand sections, so nothing may depend on hover there
+  const MOBILE_MQ = window.matchMedia("(max-width: 860px)");
+  const isMobile = () => MOBILE_MQ.matches;
+  const canHover = () => window.matchMedia("(hover: hover) and (pointer: fine)").matches && !isMobile();
+
+  // every drop-down menu (INVESTING, NOSTRO): opens on hover or click, closes on outside click / Esc / picking an item.
+  // On a phone (or any touch screen) it is a tap toggle: hover events are ignored, a second tap on the header folds it.
   function initMenus() {
     document.querySelectorAll(".tab-menu").forEach((menu) => {
       const btn = menu.querySelector(".tab-menu-btn"), pop = menu.querySelector(".tab-menu-pop");
       let timer = null;
       const open = () => {
-        document.querySelectorAll(".tab-menu").forEach((m) => { if (m !== menu) { m.classList.remove("open"); m.querySelector(".tab-menu-pop").classList.add("hidden"); } });
+        document.querySelectorAll(".tab-menu").forEach((m) => { if (m !== menu) { m.classList.remove("open"); m.querySelector(".tab-menu-pop").classList.add("hidden"); m.querySelector(".tab-menu-btn").setAttribute("aria-expanded", "false"); } });
         clearTimeout(timer); pop.classList.remove("hidden"); btn.setAttribute("aria-expanded", "true"); menu.classList.add("open");
       };
       const close = () => { pop.classList.add("hidden"); btn.setAttribute("aria-expanded", "false"); menu.classList.remove("open"); };
-      btn.addEventListener("click", (e) => { e.stopPropagation(); open(); });
-      menu.addEventListener("mouseenter", open);
-      menu.addEventListener("mouseleave", () => { timer = setTimeout(close, 220); });
-      pop.addEventListener("click", close);
-      document.addEventListener("click", (e) => { if (!menu.contains(e.target)) close(); });
+      btn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        if (!canHover() && menu.classList.contains("open")) close(); else open();
+        if (isMobile() && menu.classList.contains("open")) setTimeout(() => btn.scrollIntoView({ block: "nearest", behavior: "smooth" }), 30);
+      });
+      menu.addEventListener("mouseenter", () => { if (canHover()) open(); });
+      menu.addEventListener("mouseleave", () => { if (canHover()) timer = setTimeout(close, 220); });
+      pop.addEventListener("click", (e) => { if (e.target.closest(".tab")) close(); });
+      document.addEventListener("click", (e) => { if (!menu.contains(e.target) && !isMobile()) close(); });
       document.addEventListener("keydown", (e) => { if (e.key === "Escape") close(); });
     });
   }
 
-  // phone width: the top .tabs bar becomes a slide-in drawer behind #nx-burger (pure CSS repositioning —
-  // initMenus() above is untouched, so the WEALTH/INVESTING/NOSTRO dropdowns still work exactly the same,
-  // just flowing inline in the drawer instead of popping over the page).
+  // phone width: the top .tabs bar becomes a full-screen menu behind #nx-burger, plus a bottom tab bar with the main
+  // pages. Every page switch goes into the URL (#/tab, #/wealth/spend) so the phone's back button walks back through pages.
   function initMobileNav() {
     const burger = $("#nx-burger"), tabs = $("#tabs");
     if (!burger || !tabs) return;
-    const setOpen = (open) => { document.body.classList.toggle("nav-open", open); burger.classList.toggle("on", open); burger.setAttribute("aria-expanded", String(open)); };
+    const setOpen = (open) => {
+      document.body.classList.toggle("nav-open", open); burger.classList.toggle("on", open); burger.setAttribute("aria-expanded", String(open));
+      if (open) {
+        // unfold the section that holds the page you are on
+        const cur = tabs.querySelector(".tab.sub.active");
+        const menu = cur && cur.closest(".tab-menu");
+        if (menu && !menu.classList.contains("open")) menu.querySelector(".tab-menu-btn").click();
+        tabs.scrollTop = 0;
+      }
+      syncBottom();
+    };
     burger.addEventListener("click", (e) => { e.stopPropagation(); setOpen(!document.body.classList.contains("nav-open")); });
     tabs.addEventListener("click", (e) => { if (e.target.closest(".tab")) setOpen(false); });
-    document.addEventListener("click", (e) => { if (document.body.classList.contains("nav-open") && !e.target.closest("#tabs") && !e.target.closest("#nx-burger")) setOpen(false); });
+    document.addEventListener("click", (e) => { if (document.body.classList.contains("nav-open") && !e.target.closest("#tabs") && !e.target.closest("#nx-burger") && !e.target.closest("#nx-bnav")) setOpen(false); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
+    MOBILE_MQ.addEventListener?.("change", () => { if (!isMobile()) setOpen(false); });
+
+    // bottom tab bar (phones only, hidden by CSS on desktop)
+    const BN = [["capital", "⌂", "HOME"], ["mkts", "▤", "MARKETS"], ["news", "≡", "NEWS"], ["evmap", "◍", "WORLD"]];
+    const bn = document.createElement("nav"); bn.id = "nx-bnav"; bn.className = "nx-bnav"; bn.setAttribute("aria-label", "Main pages");
+    bn.innerHTML = BN.map(([t, ic, l]) => `<button type="button" data-go="${t}"><i>${ic}</i><span>${l}</span></button>`).join("") + '<button type="button" data-go="__menu" aria-controls="tabs"><i>☰</i><span>ALL PAGES</span></button>';
+    document.body.appendChild(bn);
+    bn.addEventListener("click", (e) => {
+      const b = e.target.closest("[data-go]"); if (!b) return; e.stopPropagation();
+      if (b.dataset.go === "__menu") { setOpen(!document.body.classList.contains("nav-open")); return; }
+      setOpen(false);
+      document.querySelector(`#tabs .tab[data-tab="${b.dataset.go}"]`)?.click();
+    });
+    const SECTION = { world: ["evmap", "supply", "altdata", "bubble"], mkts: [...document.querySelectorAll("#invest-pop .tab[data-tab]")].map((x) => x.dataset.tab) };
+    function syncBottom() {
+      const t = document.querySelector("#tabs .tab.active")?.dataset.tab, open = document.body.classList.contains("nav-open");
+      bn.querySelectorAll("[data-go]").forEach((b) => {
+        const g = b.dataset.go;
+        const on = g === "__menu" ? open : !open && (g === t || (g === "evmap" && SECTION.world.includes(t)) || (g === "mkts" && SECTION.mkts.includes(t)));
+        b.classList.toggle("on", on);
+      });
+    }
+    window.addEventListener("nx:page", syncBottom); syncBottom();
+
+    // URL routing: #/<tab> or #/wealth/<page>. Leaves the other hash uses (#win=, #acct, #boot) alone.
+    const itemFor = (tab, wp) => (wp ? document.querySelector(`#tabs .tab[data-tab="${tab}"][data-wpage="${wp}"]`) : null) || document.querySelector(`#tabs .tab.sub[data-tab="${tab}"].cur`) || document.querySelector(`#tabs .tab[data-tab="${tab}"]`);
+    let fromHistory = false;
+    document.addEventListener("click", (e) => {
+      const it = e.target.closest("#tabs .tab[data-tab]"); if (!it) return;
+      const h = `#/${it.dataset.tab}${it.dataset.wpage ? `/${it.dataset.wpage}` : ""}`;
+      if (!fromHistory && location.hash !== h && !/^#win=/.test(location.hash)) {
+        if (/^#\//.test(location.hash) || !location.hash) history.pushState({ nx: h }, "", h); else history.replaceState({ nx: h }, "", h);
+      }
+      if (isMobile()) window.scrollTo(0, 0);
+      setTimeout(() => window.dispatchEvent(new Event("nx:page")), 0);
+    });
+    const route = () => {
+      const m = location.hash.match(/^#\/([\w-]+)(?:\/([\w-]+))?/); if (!m) return;
+      const it = itemFor(m[1], m[2]); if (!it || it.classList.contains("active") && !m[2]) return;
+      fromHistory = true; try { it.click(); } finally { fromHistory = false; }
+    };
+    window.addEventListener("popstate", () => { if (document.body.classList.contains("nav-open")) setOpen(false); route(); });
+    if (/^#\//.test(location.hash)) setTimeout(route, 300);
   }
 
   // called by dashboard.js on every tab switch: highlight the owning menu and show where you are

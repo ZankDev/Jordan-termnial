@@ -2490,6 +2490,7 @@ html, body { overflow-x: hidden; }
 .nx-burger.on i:nth-child(1) { transform: translateY(6px) rotate(45deg); }
 .nx-burger.on i:nth-child(2) { opacity: 0; }
 .nx-burger.on i:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.nx-bnav { display: none; }
 
 /* any plain HTML data table that never had a mobile fallback: the table scrolls, not the page */
 table.data-table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
@@ -2501,30 +2502,56 @@ table.data-table thead, table.data-table tbody { display: table; width: 100%; }
   .bb-cmd label { display: none; }
   .bb-status .bb-chip-s:not(.keep) { display: none; }
 
-  /* the top tab bar becomes a slide-in drawer behind the burger; initMenus()'s dropdown logic is
-     untouched — WEALTH/INVESTING/NOSTRO still show/hide their .tab-menu-pop exactly as before, it
-     just now flows inline in the drawer (position:static) instead of popping over the page. */
+  /* PHONE NAV. The top tab bar becomes a full-screen menu behind the burger, with every page and every sub-page
+     (the drop-downs fold open inline on tap — see initMenus()/initMobileNav() in capital.js), plus a bottom tab bar.
+     The .topbar is a sticky z-index:30 stacking context, so anything inside it (the menu) can never sit above a
+     z-index on <body>: the old dimming overlay (body::before, z 85) covered the whole drawer and swallowed every tap.
+     While the menu is open the header itself is lifted above everything instead. */
+  body.nav-open { overflow: hidden; }
+  body.nav-open .topbar { z-index: 200; }
+  .nx-burger { position: relative; z-index: 2; width: 44px; height: 34px; margin: 0 2px 0 4px; }
+  .bb-row1 { min-height: 44px; }
   .tabs {
-    position: fixed; top: 0; left: 0; bottom: 0; z-index: 90; width: min(86vw, 340px); height: 100vh;
-    flex-direction: column; align-items: stretch; overflow-y: auto; overflow-x: hidden; scrollbar-width: thin;
-    background: #000; border-right: 1px solid var(--bb-amber); box-shadow: 6px 0 24px rgba(0,0,0,.6);
-    transform: translateX(-105%); transition: transform .22s ease; padding: 44px 0 20px;
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 1; width: 100vw; height: auto; max-height: none;
+    flex-direction: column; flex-wrap: nowrap; align-items: stretch; overflow-y: auto; overflow-x: hidden; overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch; scrollbar-width: thin; background: #000; border: 0; box-shadow: none;
+    padding: calc(52px + env(safe-area-inset-top)) 0 calc(76px + env(safe-area-inset-bottom));
+    visibility: hidden; opacity: 0; transform: translateY(-8px); transition: opacity .16s ease, transform .16s ease, visibility 0s linear .16s;
   }
-  body.nav-open .tabs { transform: translateX(0); }
-  body.nav-open::before { content: ""; display: block; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 85; }
-  .tabs .tab { width: 100%; height: 40px; border-right: 0; border-bottom: 1px solid var(--bb-line); justify-content: flex-start; }
-  .tab-menu { flex-direction: column; width: 100%; }
-  .tab-menu-btn { width: 100%; height: 40px; border-right: 0; border-bottom: 1px solid var(--bb-line); justify-content: flex-start; }
+  .tabs::before { content: "ALL PAGES"; position: fixed; top: env(safe-area-inset-top); left: 62px; height: 44px; color: var(--bb-amber); font: 800 13px var(--font-mono); line-height: 44px; letter-spacing: 2px; pointer-events: none; }
+  body.nav-open .tabs { visibility: visible; opacity: 1; transform: none; transition: opacity .16s ease, transform .16s ease; }
+  .tabs .tab, .tabs .tab-menu-btn { flex: none; width: 100%; height: auto; min-height: 50px; padding: 0 16px; border-right: 0; border-bottom: 1px solid var(--bb-line); justify-content: flex-start; font-size: 13px; }
+  .tab-menu { flex: none; flex-direction: column; width: 100%; }
+  .tab-menu-btn .caret { margin-left: auto; font-size: 12px; transition: transform .15s; }
+  .tab-menu.open .tab-menu-btn .caret { transform: rotate(180deg); }
   .tab-menu-pop {
-    position: static; width: 100%; min-width: 0; max-width: none; max-height: none; overflow: visible;
-    border: 0; box-shadow: none; background: #050505; padding-bottom: 4px;
+    position: static; width: 100%; min-width: 0; max-width: none; max-height: none; overflow: visible; animation: none;
+    border: 0; border-bottom: 1px solid var(--bb-amber-dim); box-shadow: none; background: #070707; padding-bottom: 4px;
   }
-  .tab-menu-pop .tab.sub {
-    height: auto; padding: 8px 16px 8px 26px; border-right: 0; white-space: normal;
-    grid-template-columns: 22px 1fr; grid-template-rows: auto auto; row-gap: 3px;
+  .tm-head { padding: 9px 16px 7px 26px; }
+  .tabs .tab-menu-pop .tab.sub {
+    min-height: 48px; height: auto; padding: 8px 16px 8px 26px; border-right: 0; white-space: normal;
+    grid-template-columns: 26px 1fr; grid-template-rows: auto auto; row-gap: 3px; column-gap: 10px; font-size: 12px;
   }
-  .tab-menu-pop .tab.sub b { grid-column: 2; grid-row: 1; }
-  .tab-menu-pop .tab.sub span { display: block; white-space: normal; grid-column: 1 / -1; grid-row: 2; overflow: visible; text-overflow: clip; }
+  .tab-menu-pop .tab.sub b { grid-column: 2; grid-row: 1; font-size: 12.5px; }
+  .tab-menu-pop .tab.sub span { display: block; white-space: normal; grid-column: 2; grid-row: 2; overflow: visible; text-overflow: clip; }
+  .tabs .tab-menu.open .tab-menu-btn.active { background: var(--bb-amber); color: #000; }
+  .tab-menu-pop .tab.sub[hidden] { display: none; }
+
+  /* bottom tab bar: the main pages one thumb-tap away, ALL PAGES opens the full menu */
+  .nx-bnav { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 210; background: #000; border-top: 1px solid var(--bb-amber); padding-bottom: env(safe-area-inset-bottom); }
+  .nx-bnav button { flex: 1 1 0; min-width: 0; height: 56px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; background: transparent; border: 0; border-right: 1px solid var(--bb-line); color: var(--bb-amber-dim); font: 700 9.5px var(--font-mono); letter-spacing: .8px; cursor: pointer; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  .nx-bnav button:last-child { border-right: 0; }
+  .nx-bnav button i { font-style: normal; font-size: 18px; line-height: 1; }
+  .nx-bnav button span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+  .nx-bnav button.on { color: #000; background: var(--bb-amber); }
+  body { padding-bottom: calc(56px + env(safe-area-inset-bottom)); }
+  .statusbar { position: static; }  /* was sticky to the bottom edge, i.e. under the tab bar */
+  /* Leaflet maps (EVENTS MAP, the globe pages) give their panes z-index 400-1000 in the page's root stacking context,
+     so on a phone the map drew over the sticky header, the menu and the bottom bar and ate their taps. Keep them inside the map. */
+  .leaflet-container, .maplibregl-map, .mapboxgl-map, .em-mapbox, .ad-mapbox, .bm-main { isolation: isolate; }
+  body.nav-open #sp-cv, body.nav-open #sp-hit { visibility: hidden; }
+  .tab, .tab-menu-btn, .nx-burger, .bb-go { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
 
   /* BACKTEST/TRAINER panel rows: the only remaining shared layout with a hard min-width and no mobile rule */
   .panel-narrow, .panel-wide { flex-basis: 100%; min-width: 0; }
@@ -3271,3 +3298,16 @@ mark.spr-k.critical { background: rgba(255, 61, 127, .32); box-shadow: inset 0 -
 .br-ck i { font-style: normal; font-weight: 800; } .br-ck.hit i, .br-ck.hit span { color: #ff4a4a; } .br-ck.ok i { color: var(--bb-up); } .br-ck.na i, .br-ck.na span { color: #666; }
 .br-ck em { grid-column: 2; font-style: normal; color: var(--bb-grey); font-size: 9.5px; }
 .br-src { display: block; font-size: 10px; color: #ccc; text-decoration: none; padding: 3px 0; border-bottom: 1px solid #141414; } .br-src b { color: var(--bb-amber); margin-right: 4px; } .br-src:hover { color: var(--bb-amber); }
+
+/* PHONES — WORLD pages (EVENTS MAP, ALT DATA, BUBBLE RADAR). Their desktop shells are a fixed 100vh-high row of
+   list | map/graph | side panel; on a phone the wrapped toolbars alone eat that height, so the map overflowed the page
+   (under the status bar and the bottom tab bar) and the side lists squeezed the map to a sliver. Stack them instead.
+   Placed at the end of the file so it wins over the page rules above it. */
+@media (max-width: 860px) {
+  .em-wrap, .ad-wrap, .br-wrap { height: auto; min-height: 0; }
+  .em-body, .ad-body, .br-body { flex: none; flex-direction: column; }
+  .em-mapbox, .ad-mapbox { flex: none; height: 58vh; min-height: 340px; }
+  .br-graph { flex: none; height: 62vh; min-height: 360px; }
+  .ad-list, .br-loops { width: auto; max-height: 240px; border-right: 0; border-bottom: 1px solid var(--bb-line); }
+  .ad-side, .br-side, .em-side { width: auto; max-height: none; border-left: 0; border-top: 1px solid var(--bb-amber-dim); }
+}

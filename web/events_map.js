@@ -98,6 +98,8 @@
   function sizeStage() {
     const box = $("#em-wrap"); if (!box || !S.active) return;
     const fs = document.fullscreenElement === box;
+    // phones: the page stacks toolbar / map / side panel and scrolls (bloomberg.css), so no fixed stage height
+    if (!fs && window.matchMedia("(max-width: 860px)").matches) { box.style.height = ""; if (S.map) S.map.invalidateSize(); return; }
     const top = fs ? 0 : box.getBoundingClientRect().top + window.scrollY;
     box.style.height = `${Math.max(520, window.innerHeight - (fs ? 0 : Math.min(top, window.innerHeight * 0.4)) - (fs ? 0 : 8))}px`;
     if (S.map) S.map.invalidateSize();

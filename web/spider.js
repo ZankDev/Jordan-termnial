@@ -41,6 +41,9 @@
     ctx = cv.getContext("2d"); ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
+  // phones: the bottom tab bar (#nx-bnav) owns the bottom of the screen, so the spider perches above it instead of on its buttons
+  function bnavH() { const b = document.getElementById("nx-bnav"); return b && getComputedStyle(b).display !== "none" ? b.getBoundingClientRect().height : 0; }
+
   // ------------------------------------------------------------------ the body and its legs
   const R = 40;                        // leg reach (px)
   const ANG = [-0.45, -1.15, -1.95, -2.6, 0.45, 1.15, 1.95, 2.6];  // around the heading: front pair first
@@ -192,7 +195,7 @@
       S.nextIdle = now + 3500 + Math.random() * 5000;
       // perch in the bottom-right corner; with the panel open, just left of it (never on its ASK button)
       const pr = panel.classList.contains("hidden") ? null : panel.getBoundingClientRect();
-      const hx = pr ? pr.left - 50 : W - 70, hy = H - 70;
+      const hx = pr ? pr.left - 50 : W - 70, hy = H - 70 - bnavH();
       S.tx = hx - Math.random() * 60; S.ty = hy - Math.random() * 40;
       return;
     }
@@ -614,7 +617,7 @@
     // their pixels are plain viewport pixels, the same space getBoundingClientRect() reports headline positions in
     document.documentElement.append(cv, hit); document.body.append(panel, rpt, reader);
     size(); applyOff();
-    window.addEventListener("resize", () => { size(); if (S.mode === "perch") { S.x = Math.min(S.x, W - 40); S.y = Math.min(S.y, H - 40); } });
+    window.addEventListener("resize", () => { size(); if (S.mode === "perch") { S.x = Math.min(S.x, W - 40); S.y = Math.min(S.y, H - 40 - bnavH()); } });
     loadScan();
     setInterval(() => { if (!document.hidden && (onNews() || !panel.classList.contains("hidden") || Date.now() - S.lastScan > 300000)) loadScan(); }, 60000);
     setInterval(watchLists, 1500); watchLists();
