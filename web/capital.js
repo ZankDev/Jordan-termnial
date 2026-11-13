@@ -119,6 +119,7 @@
     { code: "WMAP", tab: "evmap", desc: "WORLD › EVENTS MAP — live quakes, hurricanes, GDACS / NASA hazards, radar + market impact", alias: ["WORLD", "EVENTS", "QUAKES", "QUAKE", "HURRICANE", "HURRICANES", "STORMS", "GDACS", "WEATHER"] },
     { code: "SUPPLY", tab: "supply", desc: "WORLD › SUPPLY CHAIN — straits → commodities → refiners / airlines / producers, live status", alias: ["SUPPLYCHAIN", "CHAIN", "GRAPH"] },
     { code: "ALT", tab: "altdata", desc: "WORLD › ALT DATA — satellite oil tanks, terminals, ports, mines, crops · ships · alerts", alias: ["ALTDATA", "SATELLITE", "TANKS"] },
+    { code: "BUBL", tab: "bubble", desc: "WORLD › BUBBLE RADAR — circular-financing loops, bubble score, red flags", alias: ["BUBBLE", "BUBBLES", "CIRCULAR", "LOOPS"] },
     { code: "RWAS", tab: "rwas", desc: "MARKETS › RWAS — stablecoin supply, mints and burns, by chain and peg type", alias: ["STABLECOINS", "STABLES", "USDT"] },
     { code: "WALL", tab: "wall", desc: "MARKETS › LIVE WALL — up to 50 live charts from your watchlist", alias: ["LIVEWALL", "CHARTS"] },
     { code: "IMAP", tab: "heat", desc: "MARKETS › HEATMAP — S&P 500 / Nasdaq-100 treemap", alias: ["HEATMAP", "MAP"] },

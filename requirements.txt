@@ -10,3 +10,4 @@ reportlab==5.0.1
 openpyxl>=3.1
 scipy>=1.17
 statsmodels>=0.15
+networkx>=3.3

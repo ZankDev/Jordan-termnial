@@ -35,11 +35,12 @@
     connect: ["connect.js?v=20261004b"],
     rwas: ["rwas.js?v=20261002b"],
     supply: ["supply.js?v=20261113a"],
+    bubble: [`${CDN}d3@7.9.0/dist/d3.min.js`, "bubble.js?v=20261113b"],
     altdata: ["altdata.js?v=20261113b"],
     evmap: ["events_map.js?v=20261113d", "godseye_layers.js?v=20261113b"],
   };
   const TAB_GROUP = { security: "security", fund: "fund", journal: "journal", polymarket: "polymarket", pmx: "pmx", ntlab: "ntlab", acct: "acct", hot: "hot",
-    slab: "slab", live: "live", flow: "flow", wealth: "wealth", wall: "wall", connect: "connect", rwas: "rwas", evmap: "evmap", supply: "supply", altdata: "altdata" };
+    slab: "slab", live: "live", flow: "flow", wealth: "wealth", wall: "wall", connect: "connect", rwas: "rwas", evmap: "evmap", supply: "supply", altdata: "altdata", bubble: "bubble" };
 
   const loaded = new Set(), pending = new Map(), BEFORE = {};
   function script(src) {

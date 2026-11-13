@@ -107,6 +107,9 @@ app.include_router(cause_router)
 from app.api.altdata_routes import router as altdata_router  # noqa: E402
 
 app.include_router(altdata_router)
+from app.api.bubble_routes import router as bubble_router  # noqa: E402
+
+app.include_router(bubble_router)
 
 app.include_router(wealth_router)
 
