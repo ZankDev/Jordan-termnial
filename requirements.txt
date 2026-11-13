@@ -11,3 +11,8 @@ openpyxl>=3.1
 scipy>=1.17
 statsmodels>=0.15
 networkx>=3.3
+
+# server deps that were only installed locally (needed for cloud deploy)
+six>=1.16
+beautifulsoup4>=4.12
+lxml>=5.2
