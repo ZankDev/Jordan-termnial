@@ -35,7 +35,7 @@
     connect: ["connect.js?v=20261004b"],
     rwas: ["rwas.js?v=20261002b"],
     supply: ["supply.js?v=20261113a"],
-    altdata: ["altdata.js?v=20261113a"],
+    altdata: ["altdata.js?v=20261113b"],
     evmap: ["events_map.js?v=20261113d", "godseye_layers.js?v=20261113b"],
   };
   const TAB_GROUP = { security: "security", fund: "fund", journal: "journal", polymarket: "polymarket", pmx: "pmx", ntlab: "ntlab", acct: "acct", hot: "hot",
