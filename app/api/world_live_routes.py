@@ -13,7 +13,7 @@ from typing import Any, Callable
 from fastapi import APIRouter, HTTPException
 
 from app.api.capital_routes import _chart, cached
-from app.world import hazards, impact
+from app.world import godseye, hazards, impact
 
 router = APIRouter(prefix="/api/world/live", tags=["world-live"])
 _POOL = cf.ThreadPoolExecutor(max_workers=12, thread_name_prefix="wlive")
@@ -83,7 +83,19 @@ def _safe(fn: Callable[[], Any], default: Any = None) -> Any:
 
 def _storms() -> dict[str, Any]:
     f_nhc, f_gd, f_eo = _POOL.submit(_nhc), _POOL.submit(_gdacs), _POOL.submit(_eonet)
+    f_gis = _POOL.submit(lambda: _src("nhcgis", "wl:nhcgis", 300, godseye.nhc_gis, {"storms": {}, "outlook": []}))
     nhc, gd, eo = f_nhc.result(), f_gd.result(), f_eo.result()
+    gis = f_gis.result()
+    for s in nhc:  # God's Eye method: NHC/CPHC GIS forecast points + cone + past points, KMZ only as the fallback
+        g = gis["storms"].get((s.get("name") or "").upper())
+        if not g or not (g["fc"] or g["past"]):
+            continue
+        cat = lambda p: {**p, "cat": hazards.cat_from_kt(p.get("kt"))}  # noqa: E731
+        now = [{"lat": s["lat"], "lon": s["lon"], "kt": s.get("kt"), "cat": s["cat"], "label": "NOW", "fc": False}]
+        s["track"] = [cat(p) for p in g["past"]] + now + [cat(p) for p in g["fc"] if p.get("tau")]
+        if g["cone"]:
+            s["cone"] = g["cone"]
+        s["also"] = ["NHC GIS"]
     gstorms, recent = _gdacs_storms(gd)
     eostorms = [_safe(lambda e=e: hazards.eonet_storm(e)) for e in eo if e["code"] == "severeStorms" and e.get("_track")]
     eostorms = [s for s in eostorms if s]
@@ -92,7 +104,7 @@ def _storms() -> dict[str, Any]:
         s["kind"] = "cyclone"
     if recent:
         recent["kind"] = "cyclone"
-    return {"storms": storms, "recent": recent if not storms else None, "n": len(storms)}
+    return {"storms": storms, "recent": recent if not storms else None, "n": len(storms), "outlook": gis.get("outlook") or []}
 
 
 def _hazards() -> list[dict[str, Any]]:

@@ -98,6 +98,9 @@ from app.api.wealth_routes import router as wealth_router  # noqa: E402
 from app.api.world_live_routes import router as world_live_router, warm as world_live_warm  # noqa: E402
 
 app.include_router(world_live_router)
+from app.api.world_gx_routes import router as world_gx_router  # noqa: E402
+
+app.include_router(world_gx_router)
 
 app.include_router(wealth_router)
 

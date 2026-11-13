@@ -59,6 +59,7 @@
         <button class="bb-chip" id="em-refresh" title="refresh now">⟳</button>
         <button class="bb-chip" id="em-fs" title="full screen">⛶</button>
       </div>
+      <div class="em-bar em-bar2" id="em-bar2" hidden></div>
       <div class="em-body">
         <div class="em-mapbox">
           <div id="em-map"></div>
@@ -67,10 +68,13 @@
           <div class="em-kpis" id="em-kpis"></div>
         </div>
         <aside class="em-side">
-          <div class="bb-ph"><span class="bb-n">1</span>MARKET IMPACT<span class="sp"></span><span class="meta" id="em-imeta">exposed assets</span></div>
-          <div class="em-sel" id="em-sel" hidden></div>
-          <div class="bb-pb em-impact" id="em-impact">${NX.load("LOADING LIVE EVENTS")}</div>
-          <div class="em-note">Rule table: which assets sit in or near an event's path, and their usual first reaction (▲ up / ▼ down / ◆ volatile). A historical tendency, not a forecast.</div>
+          <div class="em-tabs" id="em-tabs"><button class="on" data-p="impact">IMPACT</button></div>
+          <div class="em-pane" data-p="impact">
+            <div class="bb-ph"><span class="bb-n">1</span>MARKET IMPACT<span class="sp"></span><span class="meta" id="em-imeta">exposed assets</span></div>
+            <div class="em-sel" id="em-sel" hidden></div>
+            <div class="bb-pb em-impact" id="em-impact">${NX.load("LOADING LIVE EVENTS")}</div>
+            <div class="em-note">Rule table: which assets sit in or near an event's path, and their usual first reaction (▲ up / ▼ down / ◆ volatile). A historical tendency, not a forecast.</div>
+          </div>
         </aside>
       </div>
       <div class="em-ticker"><div class="em-tlabel">EVERY MOVE HAS A CAUSE</div><div class="em-tview"><div class="em-ttrack" id="em-ttrack"></div></div></div>
@@ -117,7 +121,8 @@
     ["quakes", "pulse", "storms", "hazards", "eonet", "fires"].forEach((k) => (S.g[k] = L.layerGroup().addTo(map)));
     S.canvas = canvas;
     map.on("click", () => select(null));
-    map.fitBounds([[-58, -175], [75, 185]], { animate: false });
+    S.home = () => { map.invalidateSize(); const w = map.getSize().x; map.setView([24, 15], Math.max(1.6, Math.min(3, Math.log2(w / 256))), { animate: false }); };
+    map.on("zoomend", () => map.getContainer().classList.toggle("em-zlo", map.getZoom() < 3.2));
   }
 
   const unwrap = (pts) => { // keep consecutive longitudes continuous so a dateline-crossing track does not streak across the map
@@ -294,7 +299,7 @@
   function src(name, ok, err) {
     S.src = S.src || {}; S.src[name] = { ok, err };
     const el = $("#em-src"); if (!el) return;
-    const label = { usgs: "USGS", nhc: "NHC", gdacs: "GDACS", eonet: "EONET", rainviewer: "RADAR" };
+    const label = { usgs: "USGS", nhc: "NHC", nhcgis: "NHC GIS", gdacs: "GDACS", eonet: "EONET", rainviewer: "RADAR", gfs: "GFS", nowcoast: "NOWCOAST", adsb: "ADSB.LOL", ais: "AIS", celestrak: "CELESTRAK" };
     el.innerHTML = Object.entries(S.src).map(([k, v]) => `<span class="${v.ok ? "ok" : "bad"}" data-uix-tip="${esc(label[k] || k)}|${v.ok ? "feed OK" : esc(v.err || "feed down — showing last good data")}"><i></i>${label[k] || k}</span>`).join("");
   }
   function kpis() {
@@ -331,8 +336,7 @@
     el.innerHTML = rows.length ? rows.map((r) => impactRow(r, r.id === S.sel)).join("") : `<div class="bb-empty">No current event sits in a mapped market region. Quiet is information too.</div>`;
   }
   async function loadQuotes() {
-    if (!S.d) return;
-    const syms = [...new Set(S.d.impact.flatMap((r) => r.assets.map((a) => a.sym)))];
+    const syms = [...new Set([...(S.d ? S.d.impact.flatMap((r) => r.assets.map((a) => a.sym)) : []), ...[...document.querySelectorAll("#em-wrap .em-q[data-q]")].map((el) => el.dataset.q)])].slice(0, 40);
     if (!syms.length) return;
     try {
       const r = await api(`/world/live/quotes?s=${encodeURIComponent(syms.join(","))}`);
@@ -386,6 +390,7 @@
       S.d = d; S.lastOk = Date.now();
       Object.entries(d.status || {}).forEach(([k, v]) => src(k, v.ok, v.err));
       drawAll(); renderImpact(); renderTicker();
+      HOOKS.refresh.forEach((fn) => { try { fn(d); } catch (e) { console.warn("evmap hook", e); } });
       if (S.sel) select(S.sel);
       loadQuotes();
     } catch (e) {
@@ -414,6 +419,9 @@
     const pick = (e) => { const r = e.target.closest("[data-id]"); if (r) select(r.dataset.id, true); };
     $("#em-impact").addEventListener("click", pick); $("#em-ttrack").addEventListener("click", pick); $("#em-sel").addEventListener("click", pick);
     window.addEventListener("resize", sizeStage);
+    HOOKS.built.forEach((fn) => { try { fn(); } catch (e) { console.warn("evmap hook", e); } });
+    sizeStage(); S.home(); S.map.getContainer().classList.toggle("em-zlo", S.map.getZoom() < 3.2);
+    $("#em-tabs").addEventListener("click", (e) => { const b = e.target.closest("[data-p]"); if (b) pane(b.dataset.p); });
     await refresh();
     if (S.layers.radar) radarOn();
     S.timer = setInterval(() => { if (S.active && document.visibilityState === "visible") refresh(); }, 90000);
@@ -421,7 +429,14 @@
     S.anim = requestAnimationFrame(animate);
   }
 
-  NX.evmap = { _S: S, refresh, select };
+  function pane(p) {
+    document.querySelectorAll("#em-tabs [data-p]").forEach((b) => b.classList.toggle("on", b.dataset.p === p));
+    document.querySelectorAll("#em-wrap .em-pane").forEach((el) => { el.hidden = el.dataset.p !== p; });
+    S.pane = p; HOOKS.pane.forEach((fn) => fn(p));
+  }
+  const HOOKS = { built: [], refresh: [], pane: [], active: [] };
+  // extension API for godseye_layers.js (and future layer packs): they add chips, panes and map layers through this
+  NX.evmap = { _S: S, refresh, select, quoteCell, loadQuotes, src, pane, esc, ago, utc, unwrap, savePrefs, HOOKS, on: (k, fn) => HOOKS[k].push(fn) };
   const prev = window.onExtraTab;
   window.onExtraTab = (tab) => {
     if (prev) prev(tab);
@@ -429,6 +444,7 @@
     S.active = on;
     if (on && !S.started) { S.started = true; dock(true); build().catch((e) => { const v = $("#view-evmap"); if (v) v.innerHTML = NX.err(e); }); return; }
     dock(on);
+    HOOKS.active.forEach((fn) => fn(on));
     if (on) { setTimeout(sizeStage, 30); if (!was && S.lastOk && Date.now() - S.lastOk > 60000) refresh(); }
   };
   // full-screen page: fold the side dock away while the map is open and put it back on leaving
