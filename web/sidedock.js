@@ -17,7 +17,7 @@
   };
   // on a phone the dock's expanded width is nearly the whole screen, so it starts collapsed there regardless of
   // the desktop preference — the toggle still opens it on demand, it just doesn't cover everything by default.
-  const S = { open: window.innerWidth > 860 && ls.get("open", true), width: ls.get("width", 340), picked: ls.get("picked", ["live", "news"]), timers: {}, lastTrade: 0 };
+  const S = { open: window.innerWidth > 1100 && ls.get("open", true), width: ls.get("width", 340), picked: ls.get("picked", ["live", "news"]), timers: {}, lastTrade: 0 };
   async function j(url, opt) { const r = await fetch(url, opt); if (!r.ok) throw new Error(r.status === 423 ? "WEALTH is locked (PIN)" : `HTTP ${r.status}`); return r.json(); }
   const ago = (ts) => { const s = Math.max(0, Date.now() / 1000 - ts); return s < 3600 ? `${Math.round(s / 60)}m` : s < 86400 ? `${Math.round(s / 3600)}h` : `${Math.round(s / 86400)}d`; };
   const hhmm = (iso) => { try { return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }); } catch (e) { return ""; } };

@@ -118,3 +118,72 @@ body { overscroll-behavior-y: none; }
 .rp-pr.s-ok i, .rp-pr.s-enforced i { color: #2be07e; } .rp-pr.s-pending i { color: var(--bb-amber); } .rp-pr.s-violated { border-color: #ff4a4a; } .rp-pr.s-violated i { color: #ff4a4a; }
 .rp-pa-go { color: #2be07e; margin-left: 10px; } .rp-pa-wait { color: var(--bb-amber); margin-left: 10px; }
 .pill-gate-warn { background: rgba(255,160,40,.14); color: #ffb02e; border: 1px solid rgba(255,160,40,.55); font-weight: 800; }
+
+/* ======================================================================================================
+   EVERY PAGE ON PHONES AND TABLETS (2026-11-14). Audited page by page at 390, 412 and 768px wide.
+   Desktop (>1100px) is untouched: every rule below is inside a max-width query.
+   ====================================================================================================== */
+@media (max-width: 1100px) {
+  /* NOSTRO › ACCOUNTS: the KPI tiles use <span> label/value/sub-line, which ran together on one line ("ACCOUNTS0 0 live") */
+  .ac-top .bb-kpi > span { display: block; }
+  .ac-top .bb-kpi .v { margin: 2px 0; }
+  /* RESEARCH sub-tabs (FIELD · WALK-FORWARD · REGIMES · EXECUTION): swipe sideways instead of clipping the last tab */
+  .nx-subnav { overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .nx-subnav::-webkit-scrollbar { display: none; }
+  .nx-subnav > b, .nx-subnav button { flex: none; }
+  /* POLYMARKET › MARKETS: the event cell was display:flex, which pulled it out of the table so the columns overlapped */
+  .px-tbl td.px-ttl { display: table-cell; min-width: 210px; }
+  .px-tbl td.px-ttl img { float: left; margin: 2px 7px 0 0; }
+  /* WHY? panel: a full-width sheet on small screens */
+  .why-panel { width: 100vw; border-left: 0; }
+  .why-f input { min-width: 0; flex: 1 1 140px; }
+  .why-f input[name=sym] { flex: 0 1 110px; }
+  .why-f button { min-height: 34px; }
+  /* SUPPLY CHAIN graph: let the graph box shrink and scroll its 900px canvas instead of widening the page */
+  .sg-graph { min-width: 0; }
+  /* price chart drawing tools: wrap onto a second row instead of running off the right edge */
+  .gp-tools { flex-wrap: wrap; max-width: 100%; }
+  /* SIDE DOCK on tablets / small laptops: it pushed every page 340px to the left (a third of a 1024px iPad), squeezing
+     panels until they overlapped. Here it starts closed (sidedock.js) and opens as a drawer over the page. */
+  body.sd-on #app, body.sd-on .ticker-tape { margin-right: 26px; }
+  body.sd-open #sd { width: min(92vw, 360px) !important; box-shadow: -10px 0 30px rgba(0,0,0,.8); }
+  /* panel headers are a fixed 26px row; with three panels side by side a long title wrapped into the panel below it */
+  .bb-ph { height: auto; min-height: 26px; flex-wrap: wrap; row-gap: 3px; padding-top: 3px; padding-bottom: 3px; }
+  /* WEALTH two-field form rows (date + amount): date/month inputs have a wide built-in minimum and pushed out of the panel */
+  .wl-2 { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .wl-2 input, .wl-2 select { min-width: 0; width: 100%; box-sizing: border-box; }
+  /* POLYMARKET copytrader "track a wallet" row: fixed-width inputs squeezed the button to 22px; let the row wrap */
+  .pm-newrow { flex-wrap: wrap; }
+  .pm-newrow input { flex: 1 1 140px; min-width: 0; width: auto !important; }
+  .pm-newrow .btn { flex: none; }
+}
+@media (max-width: 520px) { .wl-2 { grid-template-columns: 1fr; } }
+
+@media (max-width: 860px) {
+  /* WORLD › SUPPLY CHAIN: the 330px side panel left the graph a 60px sliver. Graph on top (swipe it sideways), details under it */
+  .sg-wrap { min-height: 0; }
+  .sg-body { flex: none; flex-direction: column; }
+  .sg-graph { flex: none; height: 62vh; min-height: 360px; -webkit-overflow-scrolling: touch; }
+  .sg-side { width: auto; max-height: none; border-left: 0; border-top: 1px solid var(--bb-amber-dim); }
+  .sg-t { flex-direction: column; gap: 2px; }
+  .sg-leg em { margin-left: 0; flex-basis: 100%; }
+  /* MARKETS › WORKSPACE: resizable split panes become a vertical stack of full-width panels */
+  .wk-shell { height: auto; min-height: 0; }
+  .wk-shell > .bb-ph select { max-width: 48%; min-width: 0; }
+  .wk-root { display: block; padding: 4px; }
+  .wk-split, .wk-split.h, .wk-split.v { display: flex; flex-direction: column; flex: none !important; gap: 6px; }
+  .wk-split > .wk-gut { display: none; }
+  .wk-leaf { flex: none !important; height: 360px; }
+  .wk-h { height: auto; min-height: 34px; }
+  .wk-h .wk-b { min-width: 32px; min-height: 30px; }
+  /* BACKTEST / TRAINER: #app .panel-narrow (320px) out-ranked the existing full-width phone rule */
+  #app .panel-narrow, #app .panel-wide { flex: 1 1 100%; min-width: 0; max-width: 100%; }
+  #app .panel-row { flex-direction: column; align-items: stretch; }
+  /* WEALTH › BUSINESS road to ₪1M: six phase names in one 390px row were cut off; wrap them into rows of three */
+  .wl-rbar { flex-wrap: wrap; height: auto; }
+  .wl-rseg { flex: 1 1 30% !important; min-width: 0; height: 26px; }
+  .wl-rseg span { overflow: hidden; text-overflow: ellipsis; display: block; }
+}
+/* touch tablets (iPad landscape) keep the desktop top bar: its function-key row was a fixed 26px while touch tabs are 38px,
+   so the tabs hung over the ticker tape */
+@media (pointer: coarse) and (min-width: 861px) { .tabs { height: auto; min-height: 26px; } }
